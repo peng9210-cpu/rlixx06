@@ -899,12 +899,12 @@ function vHome() {
   h += `<div class='stats'><div class='stat'><b class='cnum' data-n='${past.length}'>${past.length}</b><span>지난 공연</span></div><div class='stat'><b class='cnum' data-n='${liveSongs}'>${liveSongs}</b><span>라이브 된 곡</span></div><div class='stat'><b class='cnum' data-n='${total}'>${total}</b><span>셋리 누적</span></div></div>`;
   h += bdaySection();
   h += bandSection();
+  if (past.length) h += sec('최근 공연', `<button class='more' data-act='allPast'>전체 ${past.length} ›</button>`, 'Recent') + `<div class='card' style='padding:4px 16px'>` + past.slice(0, 3).map(function (s) { return showRow(s, false); }).join('') + `</div>`;
   h += luckSection();
   if (up.length > 1) h += sec('그다음 공연', up.length > 4 ? `<button class='more' data-act='allUp'>전체 ${up.length} ›</button>` : '', 'Upcoming') + `<div class='card' style='padding:4px 16px'>` + up.slice(1, 4).map(function (s) { return showRow(s, true); }).join('') + `</div>`;
   const md = t.slice(5);
   const ago = D.shows.filter(function (s) { return s['날짜'].slice(5) === md && s['날짜'] < t; });
   if (ago.length) h += sec('N년 전 오늘', '', 'On this day') + ago.map(function (s) { const y = Number(t.slice(0, 4)) - Number(s['날짜'].slice(0, 4)); return `<div class='card tap' data-go='show' data-id='${esc(s.k)}'><b>${y}년 전 오늘</b> 이 공연이 있었어<div class='sm'>${esc(s['공연명'])} · ${esc(s['장소'])}</div></div>`; }).join('');
-  if (past.length) h += sec('최근 공연', `<button class='more' data-act='allPast'>전체 ${past.length} ›</button>`, 'Recent') + `<div class='card' style='padding:4px 16px'>` + past.slice(0, 3).map(function (s) { return showRow(s, false); }).join('') + `</div>`;
   const waits = Object.keys(D.stat).map(function (n) { return D.stat[n]; }).filter(function (s) { return s.rest > 0; }).sort(function (a, b) { return b.rest - a.rest; }).slice(0, 3);
   if (waits.length >= 2) h += sec('오래 안 한 곡 🥲', '', 'Missing') + `<div class='card' style='padding:4px 16px'>` + waits.map(function (w) { return `<div class='sl tap' data-go='song' data-id='${esc(w.name)}'><div class='sinfo'><div class='st' style='font-weight:600'>${esc(w.name)}</div></div><span class='dpill'>${w.rest}공연째</span></div>`; }).join('') + `</div>`;
   h += msgSection();
