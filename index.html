@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>갈릭스 라이브 아카이브</title>
+<meta name="description" content="GARLIXX 공연 · 셋리스트 · 곡 기록">
+<meta name="theme-color" content="#F6F1E9">
+<meta property="og:title" content="GARLIXX LIVE ARCHIVE">
+<meta property="og:description" content="갈릭스 공연 · 셋리스트 · 곡 기록">
+<meta property="og:image" content="img/seal.png">
+<link rel="icon" href="img/seal.png">
+<link rel="apple-touch-icon" href="img/seal.png">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&display=swap">
+<style>
+:root{
+  --bg:#F6F1E9;--card:#FFFDF9;--ink:#211C17;--ink2:#3A332C;--sub:#8C8378;--line:#ECE4D8;--soft:#F1EADF;
+  --yel:#FFCF3F;--yel2:#FFF3C9;--mus:#B98A00;--red:#D9483B;--redbg:#FCEBE8;
+  --serif:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{color-scheme:light}
+body{margin:0;font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-0.2px;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:rgba(246,241,233,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:calc(12px + env(safe-area-inset-top)) 20px 10px;display:flex;align-items:center;justify-content:space-between;max-width:680px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;user-select:none;-webkit-user-select:none;cursor:pointer}
+.logo img{width:34px;height:34px;border-radius:50%;background:#fff;object-fit:cover;box-shadow:0 0 0 1px var(--line)}
+.lt b{display:block;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.5px;line-height:1}
+.lt small{display:block;font-size:9px;font-weight:700;letter-spacing:2.6px;color:var(--sub);margin-top:4px}
+.hr{display:flex;align-items:center;gap:6px}
+#sync{font-size:11px;color:var(--sub);margin-right:4px}
+.sns{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);box-shadow:0 0 0 1px var(--line);color:var(--ink);transition:transform .15s}
+.sns:active{transform:scale(.92)}
+.sns svg{width:18px;height:18px;display:block}
+main{padding:4px 16px 120px;max-width:680px;margin:0 auto}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:6;background:var(--ink);border-radius:99px;display:flex;padding:6px;gap:2px;box-shadow:0 10px 30px rgba(33,28,23,.28);width:min(360px,calc(100% - 32px))}
+nav button{flex:1;background:none;border:none;color:rgba(255,248,236,.55);font-size:10.5px;font-weight:600;padding:7px 0 6px;border-radius:99px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+nav button svg{width:21px;height:21px;display:block}
+nav button.on{color:var(--ink);background:var(--yel)}
+.card{background:var(--card);border-radius:22px;padding:16px;margin-bottom:12px;box-shadow:0 0 0 1px var(--line)}
+.tap{cursor:pointer}
+.sec{display:flex;justify-content:space-between;align-items:flex-end;margin:28px 4px 10px;gap:8px}
+.sec h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.4px}
+.sec h2 em{display:block;font-family:var(--serif);font-style:italic;font-weight:500;font-size:13px;color:var(--mus);letter-spacing:0;margin-bottom:2px}
+.more{background:none;border:none;color:var(--sub);font-size:13px;padding:4px;cursor:pointer}
+.sub{color:var(--sub);font-size:13px}
+
+.hero{background:var(--ink);color:#FFF8EC;border-radius:26px;padding:22px 20px 20px;margin-top:6px;position:relative;overflow:hidden;isolation:isolate}
+.hero:before{content:'';position:absolute;width:320px;height:320px;right:-120px;top:-150px;background:radial-gradient(circle,rgba(255,207,63,.38),rgba(255,207,63,0) 65%);z-index:-1;animation:glow 7s ease-in-out infinite}
+.hero.stage:before{width:520px;height:520px;right:-180px;top:-220px;background:radial-gradient(circle,rgba(255,207,63,.6),rgba(255,207,63,0) 62%)}
+@keyframes glow{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.hero .kick{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--yel);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:inline-block;font-family:'Pretendard Variable',Pretendard,sans-serif;font-style:normal;font-size:11px;font-weight:700;padding:4px 9px;border-radius:99px;background:rgba(255,248,236,.12);color:#FFF8EC}
+.pill.yel{background:var(--yel);color:var(--ink)}
+.hero .dday{font-family:var(--serif);font-size:64px;font-weight:600;letter-spacing:-2px;line-height:1;margin-top:14px}
+.hero .title{font-size:20px;font-weight:800;margin-top:12px;line-height:1.35;letter-spacing:-.5px;padding-right:84px}
+.hero .meta{font-size:13px;color:rgba(255,248,236,.7);margin-top:6px;line-height:1.5}
+.stk{position:absolute;right:16px;top:16px;width:92px;height:92px;background:#fff;border-radius:24px;padding:4px;transform:rotate(7deg);box-shadow:0 10px 24px rgba(0,0,0,.35);animation:stick 4.5s ease-in-out infinite;pointer-events:none}
+.stk img{width:100%;height:100%;object-fit:contain;display:block}
+@keyframes stick{0%,100%{transform:rotate(7deg) translateY(0)}50%{transform:rotate(4deg) translateY(-4px)}}
+.spk{position:absolute;color:var(--yel);font-style:normal;font-size:13px;opacity:0;animation:twinkle 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:1;transform:scale(1)}}
+.hero .actions{margin-top:16px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.stat{background:var(--card);border-radius:18px;padding:14px 8px 12px;text-align:center;box-shadow:0 0 0 1px var(--line)}
+.stat b{display:block;font-family:var(--serif);font-size:28px;font-weight:600;line-height:1.15}
+.stat span{font-size:11px;color:var(--sub);font-weight:600}
+.me{background:var(--yel2);box-shadow:0 0 0 1.5px var(--yel) inset}
+.me .stat{background:rgba(255,255,255,.7);box-shadow:none}
+
+.band{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:18px 6px 16px}
+.mem{text-align:center;cursor:pointer;position:relative;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.mimg{width:62px;height:62px;margin:0 auto;border-radius:50%;overflow:hidden;background:#fff;position:relative}
+.mimg img{width:100%;height:100%;object-fit:cover;display:block}
+.mimg.boing{animation:boing .55s ease}
+@keyframes boing{0%{transform:scale(1)}30%{transform:scale(1.2,.82)}60%{transform:scale(.9,1.12)}100%{transform:scale(1)}}
+.pf{position:absolute;left:50%;top:31px;width:12px;height:13px;margin:-6.5px 0 0 -6px;pointer-events:none;z-index:3;animation:pf .8s cubic-bezier(.15,.75,.3,1) forwards}
+.pf svg{width:100%;height:100%;display:block}
+.pf.em{width:20px;height:20px;margin:-10px 0 0 -10px;font-size:15px;line-height:20px;text-align:center}
+@keyframes pf{0%{transform:translate(0,0) scale(.3) rotate(0deg);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(var(--r));opacity:0}}
+.sp{position:absolute;left:50%;top:-6px;font-size:11px;font-weight:800;line-height:1;background:#fff;padding:4px 8px;border-radius:99px;white-space:nowrap;box-shadow:0 3px 10px rgba(33,28,23,.18);pointer-events:none;z-index:4;animation:sp 1.3s ease forwards}
+@keyframes sp{0%{transform:translate(-50%,10px) scale(.3);opacity:0}20%{transform:translate(-50%,-14px) scale(1.1);opacity:1}35%{transform:translate(-50%,-10px) scale(1)}80%{transform:translate(-50%,-10px) scale(1);opacity:1}100%{transform:translate(-50%,-18px) scale(.9);opacity:0}}
+.mname{font-weight:800;font-size:14px;margin-top:9px}
+.mrole{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;margin-top:5px;padding:0 1px}
+.mrole span{font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px}
+
+.srow{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.srow:last-child,.sl:last-child{border-bottom:none}
+.dblk{width:50px;flex:none;text-align:center;background:var(--soft);border-radius:14px;padding:7px 0 6px}
+.dblk .d{font-family:var(--serif);font-size:21px;font-weight:600;line-height:1.05}
+.dblk .m{font-size:10px;color:var(--sub);margin-top:2px;font-weight:600}
+.sinfo{flex:1;min-width:0}
+.st{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sm{font-size:12px;color:var(--sub);margin-top:3px}
+.mini{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--soft);color:var(--ink2);margin:5px 4px 0 0;font-weight:600}
+.mini.yel{background:var(--yel2);color:#7A5B00}
+.dpill{flex:none;font-size:12px;font-weight:800;color:var(--ink);background:var(--yel2);padding:5px 10px;border-radius:99px}
+.chev{flex:none;color:#CFC6B8;font-size:20px}
+.seg{display:flex;background:#EAE2D5;border-radius:14px;padding:3px;gap:3px;flex:1}
+.seg button{flex:1;border:none;background:none;padding:9px 4px;border-radius:11px;font-size:14px;color:var(--sub);cursor:pointer}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.month{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--mus);margin:22px 6px 8px}
+.btn{background:var(--ink);color:#FFF8EC;border:none;border-radius:16px;padding:15px;font-size:15px;width:100%;font-weight:700;cursor:pointer}
+.btn.gray{background:#E9E1D4;color:var(--ink)}
+.btn2{background:var(--soft);color:var(--ink);border:none;border-radius:99px;padding:8px 13px;font-size:13px;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;text-decoration:none;cursor:pointer}
+.btn2.danger{background:var(--redbg);color:var(--red)}
+.btn2.on{background:var(--ink);color:#FFF8EC}
+.btn2.yel{background:var(--yel);color:var(--ink)}
+.btn2.glass{background:rgba(255,248,236,.12);color:#FFF8EC}
+.btn2.glass.danger{background:rgba(217,72,59,.35)}
+.btn2.white{background:#FFF8EC;color:var(--ink);padding:12px 18px;font-size:14px}
+.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.actions .btn{flex:1;width:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--soft);color:var(--ink);border:none;border-radius:99px;padding:9px 13px;font-size:14px;cursor:pointer}
+input{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:14px;font-size:16px;margin:5px 0 12px;background:var(--bg);font-family:inherit;color:var(--ink)}
+input:focus{outline:none;border-color:var(--ink);background:#fff}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.row input{margin:0}
+label{font-size:13px;color:var(--sub);font-weight:600}
+.num{flex:none;width:26px;text-align:center;font-family:var(--serif);font-style:italic;font-size:17px;font-weight:600;color:var(--mus)}
+.sl{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.av{flex:none;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--yel);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+.divider{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--mus);margin:12px 0 2px}
+.divider:before,.divider:after{content:'';flex:1;height:1px;background:var(--line)}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:99px;background:#eee;margin-left:6px;vertical-align:middle;font-weight:700}
+.rare{background:var(--yel2);color:#7A5B00}
+.warn{background:var(--redbg);color:var(--red)}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:12px}
+.bar div{height:100%;background:var(--ink);border-radius:99px}
+.back{background:none;border:none;color:var(--ink);font-size:15px;padding:8px 0 4px;font-weight:700;cursor:pointer}
+.empty{text-align:center;color:var(--sub);font-size:14px;padding:28px 10px;line-height:1.6}
+.rank{flex:none;width:24px;text-align:center;font-family:var(--serif);font-weight:600;color:#C9BFAF;font-size:17px}
+.cnt{flex:none;font-family:var(--serif);font-weight:600;font-size:20px}
+.cnt small{font-family:'Pretendard Variable',Pretendard,sans-serif;font-size:11px;color:var(--sub);font-weight:600;margin-left:1px}
+.center{text-align:center;padding:60px 0;color:var(--sub);line-height:1.7}
+.search{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:16px;padding:2px 14px;margin-top:10px;box-shadow:0 0 0 1px var(--line)}
+.search input{border:none;background:none;margin:0;padding:12px 0;flex:1}
+.search input:focus{background:none}
+.chart{display:flex;align-items:flex-end;gap:6px;height:170px;overflow-x:auto;padding-top:6px}
+.col{flex:none;width:30px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.cb{width:18px;border-radius:6px 6px 3px 3px;background:var(--ink)}
+.cb.hi{background:var(--yel)}
+.cv{font-size:11px;font-weight:800;margin-bottom:3px;min-height:14px}
+.cl{font-size:10px;color:var(--sub);margin-top:6px;white-space:nowrap}
+.pt{padding:10px 0;border-bottom:1px solid var(--line)}
+.pt:first-child{padding-top:0}
+.pt:last-child{border-bottom:none;padding-bottom:0}
+.ptt{font-size:12px;color:var(--sub);font-weight:700;margin-bottom:4px}
+.bd{display:flex;align-items:center;gap:10px;background:var(--b);border-radius:18px;padding:12px 14px;margin-top:10px}
+.bdi{font-size:20px}
+.bdt{flex:1;font-size:14px;font-weight:700}
+.bdd{flex:none;font-size:12px;font-weight:800;color:#fff;background:var(--c);padding:4px 9px;border-radius:99px}
+.bd.today{background:var(--c);color:#fff}
+.bd.today .bdd{background:#fff;color:var(--c)}
+.cal .row b{font-size:15px}
+.cal .more{font-size:22px;padding:0 12px;color:var(--ink)}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;text-align:center}
+.cw{font-size:11px;color:var(--sub);font-weight:700;padding:2px 0}
+.cd{position:relative;height:38px;border-radius:12px;font-size:13px;display:flex;align-items:center;justify-content:center}
+.cd.now{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.cd.has{background:var(--ink);color:var(--yel);font-weight:800;cursor:pointer}
+.cd.has.past{background:var(--soft);color:var(--ink)}
+.cd i{position:absolute;top:-4px;right:-2px;font-size:12px;font-style:normal}
+.luck{text-align:center}
+.luck .lq{font-size:40px;margin:6px 0 2px}
+.luck.flip{animation:flip .6s ease}
+@keyframes flip{0%{transform:perspective(600px) rotateY(90deg);opacity:.3}100%{transform:perspective(600px) rotateY(0);opacity:1}}
+.lm{font-size:13px;font-weight:800;margin-top:10px}
+.ll{font-size:15px;font-weight:600;line-height:1.6;margin:8px 4px 14px;word-break:keep-all}
+.lsg{display:flex;gap:8px}
+.lsg div{flex:1;background:var(--soft);border-radius:16px;padding:10px 6px;min-width:0}
+.lsg small{display:block;font-size:11px;color:var(--sub);font-weight:700}
+.lsg b{display:block;font-size:14px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg{white-space:pre-wrap;word-break:break-all;font-size:14px;margin-top:3px;line-height:1.5}
+.storybtn{display:flex;align-items:center;gap:14px;background:var(--yel);border-radius:22px;padding:14px 16px;margin-top:12px;cursor:pointer;border:none;width:100%;text-align:left}
+.storybtn .ic{flex:none;width:44px;height:44px;border-radius:14px;background:var(--ink);color:var(--yel);display:flex;align-items:center;justify-content:center;font-size:22px}
+.storybtn b{display:block;font-size:15px}
+.storybtn small{display:block;font-size:12px;color:#5E4A00;margin-top:2px;font-weight:600}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#app.reveal > *{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+#app.reveal > *:nth-child(2){animation-delay:.05s}
+#app.reveal > *:nth-child(3){animation-delay:.1s}
+#app.reveal > *:nth-child(4){animation-delay:.15s}
+#app.reveal > *:nth-child(5){animation-delay:.2s}
+#app.reveal > *:nth-child(n+6){animation-delay:.25s}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(33,28,23,.94);color:#FFF8EC;padding:11px 18px;border-radius:99px;font-size:14px;display:none;z-index:40;max-width:90%;text-align:center}
+
+#story{position:fixed;inset:0;z-index:30;background:#14110E;color:#FFF8EC;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top)) 16px calc(14px + env(safe-area-inset-bottom))}
+#story .top{display:flex;justify-content:space-between;align-items:center;max-width:520px;width:100%;margin:0 auto}
+#story .top b{font-size:16px}
+#story .top em{font-family:var(--serif);font-size:13px;color:var(--yel);display:block}
+#story .x{background:rgba(255,248,236,.1);border:none;color:#FFF8EC;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer}
+.stwrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:10px 0}
+#stc{height:100%;max-height:100%;width:auto;max-width:100%;aspect-ratio:9/16;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);touch-action:none;cursor:grab;background:#222}
+.stctl{max-width:520px;width:100%;margin:0 auto}
+.strow{display:flex;gap:8px;align-items:center;margin-top:8px}
+.strow .seg{background:rgba(255,248,236,.1)}
+.strow .seg button{color:rgba(255,248,236,.6);padding:8px 4px;font-size:13px}
+.strow .seg button.on{background:#FFF8EC;color:var(--ink)}
+.sl2{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:12px;color:rgba(255,248,236,.65);font-weight:600}
+.sl2 span{width:52px;flex:none}
+.sl2 input{margin:0;padding:0;border:none;background:none;accent-color:var(--yel)}
+.pick{flex:1;color:#FFF8EC;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,248,236,.1);border-radius:14px;padding:11px;font-size:14px;font-weight:700;cursor:pointer}
+.sthint{font-size:11px;color:rgba(255,248,236,.45);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" id="logo"><img src="img/seal.png" alt=""><span class="lt"><b>GARLIXX</b><small>LIVE ARCHIVE</small></span></div>
+  <div class="hr">
+    <span id="sync"></span>
+    <a class="sns" href="https://www.instagram.com/garlixx/" target="_blank" rel="noopener" aria-label="갈릭스 인스타그램"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+    <a class="sns" href="https://www.youtube.com/@garlixxofficial" target="_blank" rel="noopener" aria-label="갈릭스 유튜브"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/></svg></a>
+  </div>
+</header>
+<main id="app"><div class="center">불러오는 중…</div></main>
+<nav id="nav"></nav>
+<div id="toast"></div>
+<script>
+// Apps Script 웹앱 주소 (데이터 서버)
+const API = 'https://script.google.com/macros/s/AKfycbyzZg-KNC4jYIpJlBB_1YpmkRFTydiiu39jtPkrSMVL1PoDjbcdLu9MukhidsLt4GtSOA/exec';
+
+let D = null, VIEW = 'home', PARAM = null, HIST = [], FORM = null, SETEDIT = null, CONFIRM = null, SHOWSEG = null, CAL = null, LUCKFLIP = false;
+let PENDING = 0, LOADING = false, VISITS = null, TAPS = [], SEARCH = '', MSGN = 10, COUNTED = false, REVEAL = true, STORY = null;
+let MYNAME = '', ME = false;
+try { MYNAME = localStorage.getItem('gx_name') || ''; ME = localStorage.getItem('gx_me') === '1'; } catch (e) {}
+const ICON = {
+  home: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round'><path d='M3.5 10.5 12 3.5l8.5 7V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z'/></svg>",
+  shows: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round'><path d='M3.5 6.5h17v3.2a2.3 2.3 0 0 0 0 4.6v3.2h-17v-3.2a2.3 2.3 0 0 0 0-4.6z'/><path d='M14.5 6.5v11' stroke-dasharray='2 2.2'/></svg>",
+  songs: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round'><path d='M9 18V5.5l11-2V16'/><circle cx='6.5' cy='18' r='2.6'/><circle cx='17.5' cy='16' r='2.6'/></svg>",
+  stats: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'><path d='M5 20v-8M12 20V5M19 20v-5'/></svg>"
+};
+const TABS = [['home', '홈'], ['shows', '공연'], ['songs', '곡'], ['stats', '통계']];
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+// 멤버: bd는 생일 [월, 일], 모르면 null
+const BAND = [
+  {id: 'kj', name: '경준', role: ['보컬', '하모니카'], color: '#7A5CF0', bg: '#EFEAFF', h: '💜', bd: [5, 2]},
+  {id: 'dh', name: '도현', role: ['드럼'], color: '#EF7A0A', bg: '#FFF0E0', h: '🧡', bd: [12, 5]},
+  {id: 'cg', name: '창규', role: ['기타'], color: '#1E9E6A', bg: '#E2F5EC', h: '💚', bd: [9, 28]},
+  {id: 'db', name: '덕배', role: ['베이스'], color: '#2F7BE0', bg: '#E5EFFC', h: '💙', bd: null}
+];
+const SPECIAL = {kj: ['🐣', '삐약!'], dh: ['🐶', '멍!'], cg: ['🎸', '쟁~'], db: ['🦆', '꽥!']};
+const LUCK_G = ['막혔던 일이 하나둘 풀리는 날이에요. 미뤄둔 연락이 있다면 오늘 먼저 해보세요.', '주변에서 기분 좋은 소식이 들려와요. 작은 제안도 흔쾌히 받아들이면 좋아요.', '집중력이 좋은 날이에요. 중요한 일은 오전에 끝내면 결과가 깔끔해요.', '뜻밖의 행운이 따르는 날. 예매나 응모가 있다면 오늘 도전해보세요.', '사람 운이 좋은 날이에요. 오랜만에 만나는 사람에게서 힘을 얻어요.', '마음먹은 대로 흘러가는 하루. 망설이던 일을 시작하기 좋아요.', '금전운이 살짝 오르는 날이에요. 굿즈를 사도 후회 없을 거예요.', '칭찬을 듣게 되는 날이에요. 그동안의 노력이 눈에 보이기 시작해요.', '몸도 마음도 가벼운 날. 걷거나 움직이면 운이 더 트여요.', '좋아하는 것에 시간을 쓸수록 운이 커지는 날. 오늘은 마음껏 덕질하세요.', '작은 친절이 크게 돌아오는 날이에요. 먼저 웃으며 인사해보세요.', '일이 빨리 끝나 여유가 생겨요. 그 시간은 나를 위해 써보세요.'];
+const LUCK_B = ['말 한마디가 오해를 부르기 쉬운 날. 중요한 대화는 한 번 더 생각하고 꺼내세요.', '계획이 자꾸 어긋나기 쉬운 날. 일정에 여유를 두면 마음이 편해요.', '피로가 쌓인 날이에요. 무리하지 말고 일찍 쉬는 게 운을 지키는 길이에요.', '지갑이 쉽게 열리는 날. 충동구매는 하루만 미뤄보세요.', '작은 실수가 생기기 쉬워요. 보내기 전, 나가기 전에 한 번씩 확인하세요.', '기대만큼 반응이 오지 않아 서운할 수 있어요. 너무 마음에 담아두지 마세요.', '신경이 예민해지기 쉬운 날. 이어폰 끼고 잠깐 혼자만의 시간을 가져보세요.', '서두르면 오히려 늦어지는 날. 천천히 가는 쪽이 결국 빨라요.', '남의 일에 휘말리기 쉬운 날. 오늘은 내 일에만 집중하세요.', '물건을 잃어버리기 쉬운 날. 지갑, 폰, 티켓은 꼭 두 번 챙기세요.', '컨디션이 들쭉날쭉한 하루. 따뜻한 걸 마시고 몸을 챙겨주세요.', '큰 결정은 아쉬운 날이에요. 중요한 선택은 내일로 미뤄도 괜찮아요.'];
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#39;').replace(/"/g, '&quot;'); }
+function p2(n) { return (n < 10 ? '0' : '') + n; }
+function today() { const t = new Date(); return t.getFullYear() + '-' + p2(t.getMonth() + 1) + '-' + p2(t.getDate()); }
+function nowStr() { const t = new Date(); return today() + ' ' + p2(t.getHours()) + ':' + p2(t.getMinutes()); }
+function diff(a, b) { return Math.round((dobj(b) - dobj(a)) / 86400000); }
+function key(d, r) { return d + '|' + (r || ''); }
+function sameKey(r, p) { return r['날짜'] === p[0] && (r['회차'] || '') === (p[1] || ''); }
+function asc(a, b) { return a['날짜'] < b['날짜'] ? -1 : 1; }
+function desc(a, b) { return a['날짜'] < b['날짜'] ? 1 : -1; }
+function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function dobj(s) { const p = String(s).split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); }
+function nice(s) { if (!s) return ''; const d = dobj(s); return (d.getMonth() + 1) + '월 ' + d.getDate() + '일 (' + WD[d.getDay()] + ')'; }
+function short(s) { return String(s || '').slice(2).replace(/-/g, '.'); }
+function dblk(s, withYear) { const d = dobj(s); return `<div class='dblk'><div class='d'>${d.getDate()}</div><div class='m'>${withYear ? String(d.getFullYear()).slice(2) + '.' + (d.getMonth() + 1) : (d.getMonth() + 1) + '월'} · ${WD[d.getDay()]}</div></div>`; }
+function ddText(n) { return n === 0 ? 'D-DAY' : n > 0 ? 'D-' + n : 'D+' + (-n); }
+function sec(title, right, kick) { return `<div class='sec'><h2>${kick ? `<em>${kick}</em>` : ''}${title}</h2>${right || ''}</div>`; }
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(function () { t.style.display = 'none'; }, 2500); }
+function sync() { document.getElementById('sync').textContent = PENDING ? '저장 중…' : LOADING ? '동기화 중…' : ''; }
+function editing() { const ae = document.activeElement; return VIEW === 'form' || !!SETEDIT || !!STORY || !!(ae && ae.tagName === 'INPUT' && ae.value); }
+function norm(s) { return String(s || '').toLowerCase().replace(/\s/g, ''); }
+function msgKey(m) { return m['시간'] + '|' + m['이름'] + '|' + m['내용']; }
+
+// ---- 서버 통신 ----
+function apiGet(name, extra) {
+  return fetch(API + '?api=' + name + (extra || '') + '&t=' + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
+    if (!j.ok) throw new Error(j.error || '서버 오류');
+    return j.result;
+  });
+}
+function apiPost(fn, args) {
+  return fetch(API, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({fn: fn, args: args})})
+    .then(function (r) { return r.json(); }).then(function (j) {
+      if (!j.ok) throw new Error(j.error || '서버 오류');
+      return j.result;
+    });
+}
+
+// ---- 멤버 탭 효과 ----
+let AC = null;
+const TAPN = {}, TAPT = {};
+function actx() {
+  try {
+    if (!AC) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; AC = new C(); }
+    if (AC.state === 'suspended') AC.resume();
+  } catch (e) { AC = null; }
+  return AC;
+}
+function tone(type, f0, f1, t0, dur, vol) {
+  const c = actx(); if (!c) return;
+  try {
+    const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + t0;
+    o.type = type;
+    o.frequency.setValueAtTime(f0, t);
+    o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t + dur + 0.03);
+  } catch (e) {}
+}
+function sfx(k) {
+  if (k === 'pop') { tone('sine', 420, 880, 0, 0.1, 0.22); return; }
+  if (k === 'kj') { tone('triangle', 2300, 3300, 0, 0.08, 0.2); tone('triangle', 3300, 1900, 0.11, 0.15, 0.2); return; }
+  if (k === 'dh') { tone('square', 330, 150, 0, 0.17, 0.07); tone('sawtooth', 300, 140, 0, 0.17, 0.07); return; }
+  if (k === 'cg') { [98, 123.5, 147, 196, 247, 392].forEach(function (f, i) { tone('triangle', f, f * 0.998, i * 0.03, 1.4, 0.12); tone('sawtooth', f, f * 0.998, i * 0.03, 0.5, 0.025); }); return; }
+  if (k === 'db') { [0, 0.16].forEach(function (t) { tone('sawtooth', 560, 330, t, 0.13, 0.09); tone('square', 280, 170, t, 0.13, 0.04); }); }
+}
+function miniGarlic(c) {
+  return `<svg viewBox='0 0 24 26' xmlns='http://www.w3.org/2000/svg'><path d='M12 2.6 C14 0.6 17 0.2 18.5 1 C17 2.8 14.5 3.4 12 2.6 Z' fill='${c}'/><path d='M10.6 6.8 C11 5 11.5 3.6 12 2.4 C12.5 3.6 13 5 13.4 6.8 Z' fill='#f3ead9' stroke='#dccdb4' stroke-width='1'/><path d='M12 6.2 C6.5 6.2 2 10 2 15.2 C2 21 6.8 24.5 12 24.5 C17.2 24.5 22 21 22 15.2 C22 10 17.5 6.2 12 6.2 Z' fill='#fffaf1' stroke='#dccdb4' stroke-width='1.5'/><path d='M12 7 C9.6 11 9.6 19.5 11 24 M12 7 C14.4 11 14.4 19.5 13 24' fill='none' stroke='#efe3cf' stroke-width='1.1'/></svg>`;
+}
+function burst(id) {
+  const m = BAND.filter(function (x) { return x.id === id; })[0];
+  const box = document.querySelector(".mem[data-id='" + id + "']");
+  if (!m || !box) return;
+  const now = Date.now();
+  if (!TAPT[id] || now - TAPT[id] > 1500) TAPN[id] = 0;
+  TAPT[id] = now;
+  TAPN[id]++;
+  const special = TAPN[id] >= 5;
+  if (special) TAPN[id] = 0;
+  const n = special ? 9 : 7, off = Math.random() * Math.PI * 2;
+  for (let i = 0; i < n; i++) {
+    const a = off + i * (Math.PI * 2 / n) + (Math.random() - 0.5) * 0.5;
+    const d = (special ? 40 : 32) + Math.random() * 18;
+    const p = document.createElement('span');
+    p.className = special ? 'pf em' : 'pf';
+    p.style.setProperty('--dx', Math.round(Math.cos(a) * d) + 'px');
+    p.style.setProperty('--dy', Math.round(Math.sin(a) * d + 6) + 'px');
+    p.style.setProperty('--r', Math.round((Math.random() - 0.5) * (special ? 90 : 260)) + 'deg');
+    if (special) p.textContent = SPECIAL[id][0]; else p.innerHTML = miniGarlic(m.color);
+    box.appendChild(p);
+    setTimeout(function () { p.remove(); }, 900);
+  }
+  if (special) {
+    const e = document.createElement('span');
+    e.className = 'sp';
+    e.style.color = m.color;
+    e.textContent = SPECIAL[id][1];
+    box.appendChild(e);
+    setTimeout(function () { e.remove(); }, 1400);
+    sfx(id);
+  } else sfx('pop');
+}
+
+// ---- 홈 섹션들 ----
+function bdays() {
+  const t = dobj(today());
+  return BAND.filter(function (m) { return m.bd; }).map(function (m) {
+    let d = new Date(t.getFullYear(), m.bd[0] - 1, m.bd[1]);
+    let n = Math.round((d - t) / 86400000);
+    if (n < -7) { d = new Date(t.getFullYear() + 1, m.bd[0] - 1, m.bd[1]); n = Math.round((d - t) / 86400000); }
+    return {m: m, n: n, d: d};
+  }).sort(function (a, b) { return a.n - b.n; });
+}
+function bdaySection() {
+  const all = bdays();
+  if (!all.length) return '';
+  const near = all.filter(function (x) { return x.n <= 30; });
+  return (near.length ? near : all.slice(0, 1)).map(function (x) {
+    const m = x.m;
+    const msg = x.n === 0 ? `오늘은 ${m.name} 생일! 축하해요 ${m.h}` : x.n < 0 ? `${m.name} 생일 · 늦었지만 축하해요 ${m.h}` : `${m.name} 생일 · ${x.d.getMonth() + 1}월 ${x.d.getDate()}일`;
+    return `<div class='bd${x.n === 0 ? ' today' : ''}' style='--c:${m.color};--b:${m.bg}'><span class='bdi'>🎂</span><span class='bdt'>${msg}</span><span class='bdd'>${ddText(x.n)}</span></div>`;
+  }).join('');
+}
+function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function luckOf() {
+  let dev = '';
+  try { dev = localStorage.getItem('gx_dev') || ''; } catch (e) {}
+  let h = hash(today() + '|' + dev);
+  const r = function (n) { h = (Math.imul(h ^ (h >>> 15), 2246822507) + 1013904223) >>> 0; return (h >>> 8) % n; };
+  const songs = D.songs.map(function (s) { return s['곡명']; });
+  const good = r(100) < 70, L = good ? LUCK_G : LUCK_B;
+  return {m: BAND[r(BAND.length)], good: good, song: songs[r(songs.length)], line: L[r(L.length)], score: good ? 60 + r(39) : 25 + r(35)};
+}
+function luckSection() {
+  if (!D.songs.length) return '';
+  let opened = false;
+  try { opened = localStorage.getItem('gx_luck') === today(); } catch (e) {}
+  if (!opened) return sec('오늘의 갈릭스 운세', '', 'Fortune') + `<div class='card luck'><div class='lq'>🃏</div><div class='sub'>하루에 한 번, 오늘의 운세 카드</div><div class='actions' style='justify-content:center'><button class='btn2 on' data-act='luck' style='padding:11px 22px'>카드 뒤집기</button></div></div>`;
+  const L = luckOf(), flip = LUCKFLIP;
+  LUCKFLIP = false;
+  const tip = L.good ? ['🍀 오늘의 추천곡', '들으면 좋은 기운이 더 커져요'] : ['🧿 오늘의 액땜곡', '이 곡 들으면서 나쁜 기운 털어내기'];
+  return sec('오늘의 갈릭스 운세', `<span class='sub'>행운 지수 ${L.score}</span>`, 'Fortune') + `<div class='card luck${flip ? ' flip' : ''}'><div class='lm' style='color:${L.m.color}'>오늘의 멤버 · ${L.m.name} ${L.m.h}</div><div class='ll'>${esc(L.line)}</div><div class='lsg'><div class='tap' data-go='song' data-id='${esc(L.song)}'><small>${tip[0]}</small><b>${esc(L.song)}</b><small style='margin-top:4px;font-weight:500'>${tip[1]}</small></div></div></div>`;
+}
+function calHtml() {
+  const t = today(), base = CAL || t.slice(0, 7);
+  const y = Number(base.slice(0, 4)), mo = Number(base.slice(5, 7));
+  const pad = new Date(y, mo - 1, 1).getDay(), days = new Date(y, mo, 0).getDate();
+  const ev = {}, bd = {};
+  D.shows.forEach(function (s) { if (s['날짜'].slice(0, 7) === base) { const d = Number(s['날짜'].slice(8, 10)); if (!ev[d]) ev[d] = s; } });
+  BAND.forEach(function (m) { if (m.bd && m.bd[0] === mo) bd[m.bd[1]] = true; });
+  let cells = '';
+  for (let i = 0; i < pad; i++) cells += `<div></div>`;
+  for (let d = 1; d <= days; d++) {
+    const k = base + '-' + p2(d), e = ev[d];
+    cells += `<div class='cd${k === t ? ' now' : ''}${e ? ' has' + (k < t ? ' past' : '') : ''}'${e ? ` data-go='show' data-id='${esc(e.k)}'` : ''}>${d}${bd[d] ? `<i>🎂</i>` : ''}</div>`;
+  }
+  return `<div class='card cal' style='margin-top:10px'><div class='row'><button class='more' data-act='calm' data-id='-1'>‹</button><b>${y}년 ${mo}월</b><button class='more' data-act='calm' data-id='1'>›</button></div><div class='cg'>${WD.map(function (w) { return `<div class='cw'>${w}</div>`; }).join('')}${cells}</div></div>`;
+}
+function sparkles() {
+  return `<i class='spk' style='left:58%;top:16%'>✦</i><i class='spk' style='left:90%;top:78%;animation-delay:1.2s'>✦</i><i class='spk' style='left:72%;top:88%;animation-delay:2.2s;font-size:10px'>✦</i>`;
+}
+function bandSection() {
+  return sec('멤버', `<span class='sub'>${BAND.length}인조 밴드</span>`, 'Members') + `<div class='card band'>` + BAND.map(function (m) {
+    return `<div class='mem' data-act='boing' data-id='${m.id}'><div class='mimg' style='box-shadow:0 0 0 3px ${m.bg},0 0 0 4.5px ${m.color}55'><img src='img/${m.id}.png' alt='${m.name}'></div><div class='mname'>${m.name}</div><div class='mrole'>${m.role.map(function (r) { return `<span style='color:${m.color};background:${m.bg}'>${r}</span>`; }).join('')}</div></div>`;
+  }).join('') + `</div>`;
+}
+function countUp() {
+  document.querySelectorAll('.cnum').forEach(function (el) {
+    const n = Number(el.dataset.n) || 0, t0 = performance.now(), dur = 900;
+    el.textContent = '0';
+    function step(t) { const p = Math.min(1, (t - t0) / dur); const e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(n * e); if (p < 1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  });
+}
+
+// ---- 방문 기록 ----
+function logVisit() {
+  if (ME) return;
+  let id = '', first = false;
+  try { id = localStorage.getItem('gx_dev') || ''; if (!id) { id = Math.random().toString(36).slice(2, 8); localStorage.setItem('gx_dev', id); first = true; } } catch (e) { id = 'x' + Math.random().toString(36).slice(2, 7); }
+  apiPost('logVisit', [id, first]).catch(function () {});
+}
+function loadVisits() {
+  if (!ME) return;
+  apiGet('visits').then(function (v) { VISITS = v; if (VIEW === 'home' && !editing()) render(); }).catch(function () { VISITS = {error: true}; if (VIEW === 'home' && !editing()) render(); });
+}
+
+// ---- 데이터 ----
+function load(msg, quiet) {
+  LOADING = true; sync();
+  apiGet('data').then(function (d) {
+    LOADING = false; sync();
+    if (PENDING > 0) return;
+    try { localStorage.setItem('gx_cache', JSON.stringify(d)); } catch (e) {}
+    D = d; build();
+    if (!quiet && !editing()) render();
+    if (msg) toast(msg);
+  }).catch(function (e) {
+    LOADING = false; sync();
+    if (!D) document.getElementById('app').innerHTML = `<div class='center'>불러오기 실패했어<br><span class='sub'>${esc(e.message)}</span><br><br><button class='btn2' data-act='reload'>다시 시도</button></div>`;
+    else if (!quiet) toast('최신 정보를 못 불러왔어');
+  });
+}
+function call(apply, fn, args, msg) {
+  if (apply) apply();
+  build(); render();
+  if (msg) toast(msg);
+  PENDING++; sync();
+  apiPost(fn, args).then(function () {
+    PENDING--; sync();
+    if (PENDING === 0) load('', false);
+  }).catch(function (err) {
+    PENDING--; sync();
+    toast('앗, 저장이 안 됐어: ' + err.message);
+    if (PENDING === 0) load('', false);
+  });
+}
+function build() {
+  const seen = {};
+  D.shows = D.shows.filter(function (s) { if (!s['날짜']) return false; const k = key(s['날짜'], s['회차']); if (seen[k]) return false; seen[k] = true; s.k = k; return true; });
+  const seenSong = {};
+  D.songs = D.songs.filter(function (s) { if (!s['곡명'] || seenSong[s['곡명']]) return false; seenSong[s['곡명']] = true; return true; });
+  D.reviews = D.reviews || [];
+  D.messages = (D.messages || []).filter(function (m) { return m['내용']; }).sort(function (a, b) { return a['시간'] < b['시간'] ? -1 : a['시간'] > b['시간'] ? 1 : 0; });
+  D.showMap = {}; D.setBy = {}; D.stat = {};
+  D.shows.forEach(function (s) { D.showMap[s.k] = s; });
+  D.sets.forEach(function (r) { const k = key(r['날짜'], r['회차']); (D.setBy[k] = D.setBy[k] || []).push(r); });
+  Object.keys(D.setBy).forEach(function (k) { D.setBy[k].sort(function (a, b) { return Number(a['순서']) - Number(b['순서']); }); });
+  D.songs.forEach(function (s) { D.stat[s['곡명']] = {name: s['곡명'], album: s['앨범'], plays: [], known: true}; });
+  Object.keys(D.setBy).forEach(function (k) {
+    D.setBy[k].forEach(function (r) {
+      const n = r['곡명'];
+      if (!n) return;
+      if (!D.stat[n]) D.stat[n] = {name: n, album: '', plays: [], known: false};
+      D.stat[n].plays.push({k: k, date: r['날짜'], order: r['순서'], encore: r['앵콜'] === 'O', memo: r['메모']});
+    });
+  });
+  D.order = Object.keys(D.setBy).sort();
+  D.idx = {};
+  D.order.forEach(function (k, i) { D.idx[k] = i; });
+  Object.keys(D.stat).forEach(function (n) {
+    const pl = D.stat[n].plays;
+    pl.sort(function (a, b) { return D.idx[b.k] - D.idx[a.k]; });
+    pl.forEach(function (p, i) { p.gap = pl[i + 1] ? D.idx[p.k] - D.idx[pl[i + 1].k] : 0; });
+    D.stat[n].rest = pl.length ? D.order.length - 1 - D.idx[pl[0].k] : -1;
+  });
+  D.nSets = D.order.length;
+}
+function isRare(s) { return D.nSets >= 5 && s.plays.length > 0 && s.plays.length <= 2; }
+function gapTxt(p) { return p.gap ? (p.gap > 1 ? p.gap + '공연 만에' : '') : '첫 라이브'; }
+function showName(k) { const s = D.showMap[k]; return s ? s['공연명'] : k.split('|')[0]; }
+
+// ---- 인스스 셋리카드 ----
+const SEAL = new Image();
+SEAL.src = 'img/seal.png';
+const FONT = "'Pretendard Variable', Pretendard, system-ui, sans-serif";
+const SERIF = "'Fraunces', Georgia, serif";
+const THEMES = {
+  white: {card: '#FFFDF9', ink: '#211C17', sub: '#8C8378', line: '#E2D8C8', acc: '#B98A00', chip: '#FFF3C9'},
+  black: {card: '#1A1613', ink: '#FFF8EC', sub: 'rgba(255,248,236,0.6)', line: 'rgba(255,248,236,0.2)', acc: '#FFCF3F', chip: 'rgba(255,207,63,0.16)'},
+  glass: {card: 'rgba(255,255,255,0.14)', ink: '#FFFFFF', sub: 'rgba(255,255,255,0.78)', line: 'rgba(255,255,255,0.4)', acc: '#FFE07A', chip: 'rgba(255,255,255,0.18)', glass: true}
+};
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// 양옆에 반달 홈이 파인 티켓 모양
+function ticket(ctx, X, Y, w, h, r, ny, nr) {
+  ctx.beginPath();
+  ctx.moveTo(X + r, Y);
+  ctx.lineTo(X + w - r, Y); ctx.arcTo(X + w, Y, X + w, Y + r, r);
+  ctx.lineTo(X + w, ny - nr); ctx.arc(X + w, ny, nr, -Math.PI / 2, Math.PI / 2, true);
+  ctx.lineTo(X + w, Y + h - r); ctx.arcTo(X + w, Y + h, X + w - r, Y + h, r);
+  ctx.lineTo(X + r, Y + h); ctx.arcTo(X, Y + h, X, Y + h - r, r);
+  ctx.lineTo(X, ny + nr); ctx.arc(X, ny, nr, Math.PI / 2, -Math.PI / 2, true);
+  ctx.lineTo(X, Y + r); ctx.arcTo(X, Y, X + r, Y, r);
+  ctx.closePath();
+}
+function fitText(ctx, text, maxW) {
+  text = String(text);
+  if (ctx.measureText(text).width <= maxW) return text;
+  let t = text;
+  while (t.length > 1 && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+  return t + '…';
+}
+function wrapText(ctx, text, maxW, maxLines) {
+  const words = String(text).split(' ');
+  const lines = [];
+  let cur = '';
+  words.forEach(function (w) {
+    const test = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(test).width <= maxW) { cur = test; return; }
+    if (cur) lines.push(cur);
+    cur = w;
+    while (ctx.measureText(cur).width > maxW && cur.length > 1) {
+      let i = cur.length;
+      while (i > 1 && ctx.measureText(cur.slice(0, i)).width > maxW) i--;
+      lines.push(cur.slice(0, i));
+      cur = cur.slice(i);
+    }
+  });
+  if (cur) lines.push(cur);
+  if (lines.length > maxLines) {
+    const keep = lines.slice(0, maxLines);
+    keep[maxLines - 1] = fitText(ctx, lines.slice(maxLines - 1).join(' '), maxW);
+    return keep;
+  }
+  return lines;
+}
+function spaced(ctx, px) { try { ctx.letterSpacing = px + 'px'; } catch (e) {} }
+function photoBox(st, W, H) {
+  const im = st.img, s = Math.max(W / im.width, H / im.height) * st.zoom;
+  const dw = im.width * s, dh = im.height * s;
+  const mx = (dw - W) / 2, my = (dh - H) / 2;
+  st.ox = Math.max(-mx, Math.min(mx, st.ox));
+  st.oy = Math.max(-my, Math.min(my, st.oy));
+  return [(W - dw) / 2 + st.ox, (H - dh) / 2 + st.oy, dw, dh];
+}
+function drawBg(x, st, W, H) {
+  x.save();
+  drawBg_(x, st, W, H);
+  x.restore();
+}
+function drawBg_(x, st, W, H) {
+  if (st.img) {
+    const b = photoBox(st, W, H);
+    x.drawImage(st.img, b[0], b[1], b[2], b[3]);
+    x.fillStyle = 'rgba(0,0,0,' + st.dim + ')'; x.fillRect(0, 0, W, H);
+    return;
+  }
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#2A231C'); g.addColorStop(1, '#14110E');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const r = x.createRadialGradient(W * 0.85, H * 0.08, 0, W * 0.85, H * 0.08, 900);
+  r.addColorStop(0, 'rgba(255,207,63,0.35)'); r.addColorStop(1, 'rgba(255,207,63,0)');
+  x.fillStyle = r; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#FFCF3F'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  [[0.12, 0.1, 44], [0.9, 0.86, 54], [0.16, 0.9, 30], [0.82, 0.2, 26]].forEach(function (p) { x.font = p[2] + 'px ' + FONT; x.fillText('✦', W * p[0], H * p[1]); });
+}
+function drawStory(c, st) {
+  const W = 1080, H = 1920, x = c.getContext('2d');
+  const s = D.showMap[st.k] || {}, set = D.setBy[st.k] || [], th = THEMES[st.style];
+  x.save(); x.clearRect(0, 0, W, H);
+  x.textBaseline = 'alphabetic'; x.textAlign = 'left'; spaced(x, 0);
+  drawBg(x, st, W, H);
+
+  const cx = 92, cw = W - 184, pad = 66;
+  x.font = '800 62px ' + FONT;
+  const tl = wrapText(x, s['공연명'] || '', cw - pad * 2, 2);
+  const headerH = 60 + 72 + 26 + tl.length * 76 + (s['장소'] ? 52 : 0) + 34;
+  const footerH = 108;
+  const hasEnc = set.some(function (r) { return r['앵콜'] === 'O'; });
+  const units = set.length + (hasEnc ? 0.9 : 0);
+  const maxH = H - 2 * 200;
+  const rowH = Math.max(40, Math.min(86, (maxH - headerH - footerH - 56) / Math.max(units, 1)));
+  const cardH = Math.round(headerH + 56 + rowH * units + footerH);
+  const free = Math.max(0, (H - cardH) / 2 - 150);
+  const top = Math.round((H - cardH) / 2 + st.pos * free);
+  const ny = top + headerH;
+
+  // 카드 바탕
+  x.save();
+  ticket(x, cx, top, cw, cardH, 46, ny, 22);
+  if (th.glass) {
+    x.save(); x.clip();
+    const sm = document.createElement('canvas'); sm.width = 54; sm.height = 96;
+    const sx = sm.getContext('2d'); sx.imageSmoothingQuality = 'high';
+    sx.drawImage(c, 0, 0, W, H, 0, 0, 54, 96);
+    x.imageSmoothingQuality = 'high';
+    x.drawImage(sm, 0, 0, W, H);
+    x.fillStyle = th.card; x.fillRect(0, 0, W, H);
+    x.restore();
+    x.lineWidth = 2; x.strokeStyle = 'rgba(255,255,255,0.45)'; x.stroke();
+  } else {
+    x.shadowColor = 'rgba(0,0,0,0.28)'; x.shadowBlur = 60; x.shadowOffsetY = 18;
+    x.fillStyle = th.card; x.fill();
+  }
+  x.restore();
+
+  // 머리
+  let y = top + 60;
+  const ix = cx + pad;
+  x.save(); x.beginPath(); x.arc(ix + 36, y + 36, 36, 0, Math.PI * 2); x.fillStyle = '#fff'; x.fill(); x.clip();
+  if (SEAL.complete && SEAL.naturalWidth) { const k2 = 72 / Math.min(SEAL.naturalWidth, SEAL.naturalHeight) * 1.08; x.drawImage(SEAL, ix + 36 - SEAL.naturalWidth * k2 / 2, y + 36 - SEAL.naturalHeight * k2 / 2, SEAL.naturalWidth * k2, SEAL.naturalHeight * k2); }
+  x.restore();
+  x.fillStyle = th.acc; x.font = '800 23px ' + FONT; spaced(x, 5);
+  x.fillText('GARLIXX SETLIST', ix + 96, y + 30); spaced(x, 0);
+  const d = s['날짜'] ? dobj(s['날짜']) : null;
+  x.fillStyle = th.sub; x.font = '600 28px ' + FONT;
+  if (d) x.fillText(d.getFullYear() + '. ' + (d.getMonth() + 1) + '. ' + d.getDate() + ' (' + WD[d.getDay()] + ')' + (s['회차'] ? ' · ' + s['회차'] : ''), ix + 96, y + 66);
+  y += 72 + 26;
+  x.fillStyle = th.ink; x.font = '800 62px ' + FONT; spaced(x, -1.5);
+  tl.forEach(function (line) { y += 62; x.fillText(line, ix, y); y += 14; });
+  spaced(x, 0);
+  if (s['장소']) { x.fillStyle = th.sub; x.font = '600 32px ' + FONT; x.fillText(fitText(x, s['장소'], cw - pad * 2), ix, y + 44); }
+
+  // 절취선
+  x.save(); x.strokeStyle = th.line; x.lineWidth = 3; x.setLineDash([12, 12]);
+  x.beginPath(); x.moveTo(cx + 40, ny); x.lineTo(cx + cw - 40, ny); x.stroke(); x.restore();
+
+  // 곡 목록
+  let ry = ny + 36;
+  const fs = Math.max(26, Math.min(42, rowH * 0.5));
+  let encDone = false;
+  set.forEach(function (r, i) {
+    if (r['앵콜'] === 'O' && !encDone) {
+      encDone = true;
+      const eh = rowH * 0.9, my = ry + eh / 2;
+      x.font = 'italic 600 ' + Math.round(fs * 0.9) + 'px ' + SERIF; x.fillStyle = th.acc; x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.fillText('Encore', W / 2, my);
+      const tw = x.measureText('Encore').width / 2 + 26;
+      x.strokeStyle = th.line; x.lineWidth = 2;
+      x.beginPath(); x.moveTo(ix, my); x.lineTo(W / 2 - tw, my); x.moveTo(W / 2 + tw, my); x.lineTo(cx + cw - pad, my); x.stroke();
+      x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+      ry += eh;
+    }
+    const my = ry + rowH / 2;
+    x.textBaseline = 'middle';
+    x.font = 'italic 600 ' + Math.round(fs * 0.92) + 'px ' + SERIF; x.fillStyle = th.acc; x.textAlign = 'right';
+    x.fillText(String(i + 1), ix + 46, my);
+    x.textAlign = 'left';
+    x.font = '700 ' + Math.round(fs) + 'px ' + FONT; x.fillStyle = th.ink;
+    x.fillText(fitText(x, r['곡명'], cx + cw - pad - (ix + 74)), ix + 74, my + 2);
+    x.textBaseline = 'alphabetic';
+    ry += rowH;
+  });
+  if (!set.length) { x.font = '600 32px ' + FONT; x.fillStyle = th.sub; x.fillText('셋리스트를 먼저 입력해줘', ix, ry + 50); }
+
+  // 꼬리
+  const fy = top + cardH - 58;
+  BAND.forEach(function (m, i) { x.beginPath(); x.arc(ix + 10 + i * 30, fy, 10, 0, Math.PI * 2); x.fillStyle = m.color; x.fill(); });
+  x.font = 'italic 500 28px ' + SERIF; x.fillStyle = th.sub; x.textAlign = 'right'; x.textBaseline = 'middle';
+  x.fillText('garlixx live archive', cx + cw - pad, fy);
+  x.restore();
+}
+function storyHtml() {
+  const st = STORY;
+  const seg = [['white', '화이트'], ['black', '블랙'], ['glass', '유리']].map(function (o) { return `<button data-act='stStyle' data-id='${o[0]}' class='${st.style === o[0] ? 'on' : ''}'>${o[1]}</button>`; }).join('');
+  return `<div class='top'><div><em>Story maker</em><b>인스스 셋리카드</b></div><button class='x' data-act='stClose' aria-label='닫기'>✕</button></div>
+  <div class='stwrap'><canvas id='stc' width='1080' height='1920'></canvas></div>
+  <div class='stctl'>
+    <div class='strow'><label class='pick'>📷 ${st.img ? '사진 바꾸기' : '공연 사진 고르기'}<input type='file' id='stfile' accept='image/*' hidden></label><div class='seg'>${seg}</div></div>
+    ${st.img ? `<div class='sl2'><span>어둡게</span><input type='range' id='stdim' min='0' max='70' value='${Math.round(st.dim * 100)}'></div><div class='sl2'><span>확대</span><input type='range' id='stzoom' min='100' max='300' value='${Math.round(st.zoom * 100)}'></div>` : ''}
+    <div class='sl2'><span>카드 위치</span><input type='range' id='stpos' min='-100' max='100' value='${Math.round(st.pos * 100)}'></div>
+    <div class='actions' style='margin-top:12px'><button class='btn' data-act='stSave' style='background:var(--yel);color:var(--ink)'>저장 / 공유하기</button></div>
+    <div class='sthint'>${st.img ? '미리보기를 손가락으로 끌면 사진 위치가 움직여' : '사진 안 고르면 기본 배경으로 저장돼'}</div>
+  </div>`;
+}
+function openStory(k) {
+  STORY = {k: k, img: null, zoom: 1, ox: 0, oy: 0, dim: 0.22, style: 'white', pos: 0, file: null, raf: 0, gen: 0};
+  const o = document.createElement('div');
+  o.id = 'story';
+  document.body.appendChild(o);
+  document.body.style.overflow = 'hidden';
+  storyUI();
+  const fonts = ["800 62px 'Pretendard Variable'", "700 40px 'Pretendard Variable'", "600 30px 'Pretendard Variable'", "italic 600 40px 'Fraunces'", "italic 500 28px 'Fraunces'"];
+  Promise.all(fonts.map(function (f) { return document.fonts.load(f).catch(function () {}); })).then(drawPreview);
+  if (!SEAL.complete) SEAL.onload = drawPreview;
+}
+function storyUI() {
+  const o = document.getElementById('story');
+  if (!o) return;
+  o.innerHTML = storyHtml();
+  const c = document.getElementById('stc');
+  let drag = null;
+  c.addEventListener('pointerdown', function (e) { if (!STORY.img) return; drag = {x: e.clientX, y: e.clientY, ox: STORY.ox, oy: STORY.oy}; c.setPointerCapture(e.pointerId); });
+  c.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    const k = 1080 / c.clientWidth;
+    STORY.ox = drag.ox + (e.clientX - drag.x) * k;
+    STORY.oy = drag.oy + (e.clientY - drag.y) * k;
+    drawPreview();
+  });
+  ['pointerup', 'pointercancel'].forEach(function (ev) { c.addEventListener(ev, function () { drag = null; }); });
+  drawPreview();
+}
+function drawPreview() {
+  if (!STORY || STORY.raf) return;
+  STORY.raf = requestAnimationFrame(function () {
+    if (!STORY) return;
+    STORY.raf = 0;
+    const c = document.getElementById('stc');
+    if (!c) return;
+    drawStory(c, STORY);
+    // 공유 버튼을 누르는 순간 바로 공유창이 뜨도록 파일을 미리 만들어 둠
+    STORY.file = null;
+    const gen = ++STORY.gen;
+    clearTimeout(STORY.t);
+    STORY.t = setTimeout(function () {
+      c.toBlob(function (b) { if (STORY && gen === STORY.gen && b) STORY.file = new File([b], storyName() + '.png', {type: 'image/png'}); }, 'image/png');
+    }, 250);
+  });
+}
+function storyName() { const s = D.showMap[STORY.k] || {}; return ('garlixx ' + (s['날짜'] || '') + ' ' + (s['공연명'] || 'setlist')).replace(/[\\/:*?"<>|]/g, ''); }
+function closeStory() {
+  const o = document.getElementById('story');
+  if (o) o.remove();
+  document.body.style.overflow = '';
+  if (STORY && STORY.url) URL.revokeObjectURL(STORY.url);
+  STORY = null;
+}
+function saveStory() {
+  const f = STORY && STORY.file;
+  const fallback = function (blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = storyName() + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    toast('저장했어 📸');
+  };
+  if (f && navigator.canShare && navigator.canShare({files: [f]})) {
+    navigator.share({files: [f]}).catch(function (e) { if (e && e.name !== 'AbortError') fallback(f); });
+    return;
+  }
+  if (f) { fallback(f); return; }
+  toast('카드 만드는 중…');
+  document.getElementById('stc').toBlob(function (b) { if (b) fallback(b); }, 'image/png');
+}
+function loadStoryPhoto(file) {
+  if (!file || !STORY) return;
+  const url = URL.createObjectURL(file);
+  const im = new Image();
+  im.onload = function () {
+    if (!STORY) return;
+    if (STORY.url) URL.revokeObjectURL(STORY.url);
+    STORY.url = url; STORY.img = im; STORY.zoom = 1; STORY.ox = 0; STORY.oy = 0;
+    storyUI();
+  };
+  im.onerror = function () { toast('사진을 못 읽었어 😢 다른 사진으로 해줘'); };
+  im.src = url;
+}
+
+// ---- 화면 ----
+function render() {
+  const cur = VIEW === 'show' ? 'shows' : VIEW === 'song' ? 'songs' : VIEW === 'form' ? (FORM && FORM.type === 'song' ? 'songs' : 'shows') : VIEW;
+  document.getElementById('nav').innerHTML = TABS.map(function (t) { return `<button data-tab='${t[0]}' class='${cur === t[0] ? 'on' : ''}'>${ICON[t[0]]}${t[1]}</button>`; }).join('');
+  if (!D) return;
+  const f = {home: vHome, shows: vShows, show: vShow, songs: vSongs, song: vSong, stats: vStats, form: vForm}[VIEW] || vHome;
+  const app = document.getElementById('app');
+  app.innerHTML = (HIST.length ? `<button class='back' data-act='back'>‹ 뒤로</button>` : '') + f();
+  if (REVEAL) { app.classList.remove('reveal'); void app.offsetWidth; app.classList.add('reveal'); REVEAL = false; }
+  else app.classList.remove('reveal');
+  if (VIEW === 'home' && !COUNTED) { COUNTED = true; countUp(); }
+  const ch = document.getElementById('chart');
+  if (ch) ch.scrollLeft = ch.scrollWidth;
+}
+function go(v, p, noPush) {
+  if (!noPush) HIST.push([VIEW, PARAM]);
+  VIEW = v; PARAM = (p === undefined ? null : p);
+  SETEDIT = null; CONFIRM = null;
+  REVEAL = true;
+  render(); window.scrollTo(0, 0);
+}
+function tab(v) { HIST = []; go(v, null, true); }
+function back() { const h = HIST.pop(); if (h) go(h[0], h[1], true); else tab('home'); }
+
+function showRow(s, up) {
+  const t = today();
+  const n = (D.setBy[s.k] || []).length;
+  const meta = [s['장소'], s['시간'] || s['회차']].filter(Boolean).map(esc).join(' · ');
+  let tags = '';
+  if (n) tags += `<span class='mini'>🎵 ${n}곡</span>`;
+  if (up && s['예매 오픈일'] && s['예매 오픈일'] >= t) { const od = diff(t, s['예매 오픈일']); tags += `<span class='mini yel'>🎟 예매 ${od === 0 ? '오늘' : 'D-' + od}</span>`; }
+  const right = up ? `<span class='dpill'>${ddText(diff(t, s['날짜']))}</span>` : `<span class='chev'>›</span>`;
+  return `<div class='srow tap' data-go='show' data-id='${esc(s.k)}'>${dblk(s['날짜'])}<div class='sinfo'><div class='st'>${esc(s['공연명'])}</div><div class='sm'>${meta}</div>${tags ? `<div>${tags}</div>` : ''}</div>${right}</div>`;
+}
+function meCard() {
+  if (!ME) return '';
+  let body;
+  if (!VISITS) body = `<div class='sm' style='margin-top:6px'>불러오는 중…</div>`;
+  else if (VISITS.error) body = `<div class='sm' style='margin-top:6px'>방문 기록을 못 불러왔어</div>`;
+  else body = `<div class='stats' style='margin-top:10px'><div class='stat'><b>${VISITS.todayPeople}</b><span>오늘 들어온 폰</span></div><div class='stat'><b>${VISITS.people}</b><span>지금까지 폰</span></div><div class='stat'><b>${VISITS.total}</b><span>전체 방문</span></div></div>${VISITS.last ? `<div class='sm' style='margin-top:8px'>마지막 방문 ${esc(VISITS.last)}</div>` : ''}`;
+  return `<div class='card me'><div class='row'><b style='font-size:14px'>👀 방문 기록 <span class='sub' style='font-weight:500'>나만 보여</span></b><button class='more' data-act='refreshVisits'>새로고침</button></div>${body}</div>`;
+}
+function msgSection() {
+  const all = D.messages || [];
+  const list = all.slice().reverse().slice(0, MSGN);
+  let h = sec('한마디' + (all.length ? ` <span class='sub' style='font-weight:600'>${all.length}</span>` : ''), '', 'Guestbook');
+  h += `<div class='card'><input id='mText' placeholder='아무 말이나 한마디' maxlength='200' style='margin:0 0 8px'><div class='row'><input id='mName' value='${esc(MYNAME)}' placeholder='이름 (안 써도 돼)'><button class='btn2 on' data-act='addMsg' style='padding:12px 18px'>남기기</button></div></div>`;
+  if (list.length) {
+    h += `<div class='card' style='padding:4px 16px'>` + list.map(function (m) {
+      const k = msgKey(m), nm = m['이름'] || '익명';
+      const tm = String(m['시간'] || '');
+      const when = tm.length >= 16 ? Number(tm.slice(5, 7)) + '/' + Number(tm.slice(8, 10)) + ' ' + tm.slice(11, 16) : tm;
+      return `<div class='sl' style='align-items:flex-start'><span class='av'>${esc(nm.slice(0, 1))}</span><div class='sinfo'><div style='display:flex;gap:6px;align-items:baseline'><b style='font-size:14px'>${esc(nm)}</b><span class='sm' style='margin:0'>${esc(when)}</span></div><div class='msg'>${esc(m['내용'])}</div></div><button class='btn2 danger' data-act='delMsg' data-id='${esc(k)}' style='padding:6px 10px'>${CONFIRM === 'delMsg:' + k ? '삭제?' : '🗑'}</button></div>`;
+    }).join('') + `</div>`;
+    if (all.length > MSGN) h += `<div style='text-align:center'><button class='more' data-act='moreMsg'>더 보기 (${all.length - MSGN})</button></div>`;
+  }
+  return h;
+}
+function vHome() {
+  const t = today();
+  const up = D.shows.filter(function (s) { return s['날짜'] >= t; }).sort(asc);
+  const past = D.shows.filter(function (s) { return s['날짜'] < t; }).sort(desc);
+  let h = meCard();
+  const stk = `<div class='stk'><img src='img/seal.png' alt=''></div>`;
+  if (up.length) {
+    const s = up[0], dd = diff(t, s['날짜']);
+    let extra = '';
+    if (s['예매 오픈일'] && s['예매 오픈일'] >= t) { const od = diff(t, s['예매 오픈일']); extra = `<span class='pill yel'>🎟 예매 ${od === 0 ? '오늘 오픈' : 'D-' + od}</span>`; }
+    h += `<div class='hero tap${dd === 0 ? ' stage' : ''}' data-go='show' data-id='${esc(s.k)}'>${sparkles()}${stk}<div class='kick'>${dd === 0 ? 'Today live' : 'Next live'}${extra}</div><div class='dday'>${ddText(dd)}</div><div class='title'>${esc(s['공연명'])}</div><div class='meta'>${nice(s['날짜'])}${s['시간'] ? ' ' + esc(s['시간']) : ''}${s['장소'] ? ' · ' + esc(s['장소']) : ''}</div></div>`;
+  } else {
+    h += `<div class='hero'>${sparkles()}${stk}<div class='kick'>Next live</div><div class='title' style='margin-top:44px'>다음 공연을 기다리는 중</div><div class='actions'><button class='btn2 glass' data-act='newShow'>+ 공연 추가</button></div></div>`;
+  }
+  const liveSongs = Object.keys(D.stat).filter(function (n) { return D.stat[n].plays.some(function (p) { return p.date <= t; }); }).length;
+  const total = Object.keys(D.setBy).filter(function (k) { return k.split('|')[0] <= t; }).reduce(function (a, k) { return a + D.setBy[k].length; }, 0);
+  h += `<div class='stats'><div class='stat'><b class='cnum' data-n='${past.length}'>${past.length}</b><span>지난 공연</span></div><div class='stat'><b class='cnum' data-n='${liveSongs}'>${liveSongs}</b><span>라이브 된 곡</span></div><div class='stat'><b class='cnum' data-n='${total}'>${total}</b><span>셋리 누적</span></div></div>`;
+  h += bdaySection();
+  h += bandSection();
+  h += luckSection();
+  if (up.length > 1) h += sec('그다음 공연', up.length > 4 ? `<button class='more' data-act='allUp'>전체 ${up.length} ›</button>` : '', 'Upcoming') + `<div class='card' style='padding:4px 16px'>` + up.slice(1, 4).map(function (s) { return showRow(s, true); }).join('') + `</div>`;
+  const md = t.slice(5);
+  const ago = D.shows.filter(function (s) { return s['날짜'].slice(5) === md && s['날짜'] < t; });
+  if (ago.length) h += sec('N년 전 오늘', '', 'On this day') + ago.map(function (s) { const y = Number(t.slice(0, 4)) - Number(s['날짜'].slice(0, 4)); return `<div class='card tap' data-go='show' data-id='${esc(s.k)}'><b>${y}년 전 오늘</b> 이 공연이 있었어<div class='sm'>${esc(s['공연명'])} · ${esc(s['장소'])}</div></div>`; }).join('');
+  if (past.length) h += sec('최근 공연', `<button class='more' data-act='allPast'>전체 ${past.length} ›</button>`, 'Recent') + `<div class='card' style='padding:4px 16px'>` + past.slice(0, 3).map(function (s) { return showRow(s, false); }).join('') + `</div>`;
+  const waits = Object.keys(D.stat).map(function (n) { return D.stat[n]; }).filter(function (s) { return s.rest > 0; }).sort(function (a, b) { return b.rest - a.rest; }).slice(0, 3);
+  if (waits.length >= 2) h += sec('오래 안 한 곡 🥲', '', 'Missing') + `<div class='card' style='padding:4px 16px'>` + waits.map(function (w) { return `<div class='sl tap' data-go='song' data-id='${esc(w.name)}'><div class='sinfo'><div class='st' style='font-weight:600'>${esc(w.name)}</div></div><span class='dpill'>${w.rest}공연째</span></div>`; }).join('') + `</div>`;
+  h += msgSection();
+  return h;
+}
+function vShows() {
+  const t = today();
+  const up = D.shows.filter(function (s) { return s['날짜'] >= t; }).sort(asc);
+  const past = D.shows.filter(function (s) { return s['날짜'] < t; }).sort(desc);
+  const seg = SHOWSEG || (up.length ? 'up' : 'past');
+  const list = seg === 'up' ? up : past;
+  let h = calHtml() + `<div class='row' style='margin-top:12px'><div class='seg'><button data-act='seg' data-id='up' class='${seg === 'up' ? 'on' : ''}'>예정 ${up.length}</button><button data-act='seg' data-id='past' class='${seg === 'past' ? 'on' : ''}'>지난 공연 ${past.length}</button></div><button class='btn2 on' data-act='newShow' style='padding:11px 14px'>+ 추가</button></div>`;
+  if (!list.length) return h + `<div class='empty'>${seg === 'up' ? '예정된 공연이 없어' : '아직 지난 공연 기록이 없어'}</div>`;
+  let cur = '', body = '';
+  list.forEach(function (s) {
+    const m = s['날짜'].slice(0, 4) + '년 ' + Number(s['날짜'].slice(5, 7)) + '월';
+    if (m !== cur) { if (cur) body += `</div>`; body += `<div class='month'>${m}</div><div class='card' style='padding:4px 16px'>`; cur = m; }
+    body += showRow(s, seg === 'up');
+  });
+  return h + body + `</div>`;
+}
+function itemRow(it, i) {
+  return `<div class='sl' style='flex-wrap:wrap'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st'>${esc(it.name)}</div></div><span style='display:flex;gap:4px'><button class='btn2' data-act='up' data-id='${i}'>↑</button><button class='btn2' data-act='down' data-id='${i}'>↓</button><button class='btn2 ${it.encore ? 'on' : ''}' data-act='enc' data-id='${i}'>앵콜</button><button class='btn2 danger' data-act='del' data-id='${i}'>✕</button></span><input placeholder='메모 (선택)' data-memo='${i}' value='${esc(it.memo || '')}' style='margin:4px 0 0;flex-basis:100%'></div>`;
+}
+function vShow() {
+  const k = PARAM, s = D.showMap[k];
+  if (!s) return `<div class='empty'>공연을 찾을 수 없어</div>`;
+  const t = today(), set = D.setBy[k] || [];
+  let h = `<div class='hero' style='margin-top:4px'>${sparkles()}<div class='kick'>${s['날짜'] >= t ? `<span class='pill yel'>${ddText(diff(t, s['날짜']))}</span>` : 'Live log'}</div><div class='title' style='font-size:22px;padding-right:0'>${esc(s['공연명'])}</div><div class='meta'>${nice(s['날짜'])}${s['시간'] ? ' ' + esc(s['시간']) : ''}${s['회차'] ? ' · ' + esc(s['회차']) : ''}</div>${s['장소'] ? `<div class='meta' style='margin-top:2px'>📍 ${esc(s['장소'])}</div>` : ''}${s['비고'] ? `<div class='meta' style='margin-top:2px'>${esc(s['비고'])}</div>` : ''}<div class='actions'>${s['예매 링크'] ? `<a class='btn2 yel' href='${esc(s['예매 링크'])}' target='_blank' rel='noopener'>🎟 예매</a>` : ''}<button class='btn2 glass' data-act='editShow'>✏️ 수정</button><button class='btn2 glass danger' data-act='delShow'>${CONFIRM === 'delShow' ? '한 번 더 누르면 삭제 (셋리도)' : '🗑 삭제'}</button></div></div>`;
+  if (SETEDIT) {
+    h += sec('셋리 입력', '', 'Setlist');
+    h += `<div class='card'><div class='sub'>들은 순서대로 곡을 탭해</div><div class='chips' style='margin:10px 0 12px'>` + D.songs.map(function (g) { return `<button class='chip' data-act='addItem' data-id='${esc(g['곡명'])}'>${esc(g['곡명'])}</button>`; }).join('') + `</div><div class='row'><input id='freeSong' placeholder='목록에 없는 곡은 직접 입력'><button class='btn2' data-act='addFree' style='padding:12px 14px'>추가</button></div>`;
+    h += SETEDIT.items.map(itemRow).join('');
+    h += `<div class='actions'><button class='btn' data-act='saveSet'>셋리 저장</button><button class='btn gray' data-act='cancelSet'>취소</button></div></div>`;
+  } else {
+    if (set.length) h += `<button class='storybtn' data-act='story'><span class='ic'>📸</span><span><b>인스스 셋리카드 만들기</b><small>공연 사진 위에 셋리 얹어서 저장</small></span></button>`;
+    h += sec('셋리스트' + (set.length ? ` <span class='sub' style='font-weight:600'>${set.length}곡</span>` : ''), `<button class='btn2' data-act='editSet'>✏️ ${set.length ? '수정' : '셋리 입력'}</button>`, 'Setlist');
+    if (!set.length) h += `<div class='card empty'>아직 셋리가 없어<br><span style='font-size:12px'>공연 끝나고 채워줘 🎸</span></div>`;
+    else {
+      let enc = false;
+      h += `<div class='card' style='padding:4px 16px'>` + set.map(function (r, i) {
+        let pre = '';
+        if (r['앵콜'] === 'O' && !enc) { enc = true; pre = `<div class='divider'>Encore</div>`; }
+        const pp = (D.stat[r['곡명']] || {plays: []}).plays.filter(function (x) { return x.k === k; })[0], g = pp ? gapTxt(pp) : '';
+        return pre + `<div class='sl tap' data-go='song' data-id='${esc(r['곡명'])}'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st' style='font-weight:600'>${esc(r['곡명'])}${g ? `<span class='tag rare'>${g}</span>` : ''}</div>${r['메모'] ? `<div class='sm'>${esc(r['메모'])}</div>` : ''}</div><span class='chev'>›</span></div>`;
+      }).join('') + `</div>`;
+    }
+  }
+  return h;
+}
+function songListHtml() {
+  const all = Object.keys(D.stat).map(function (n) { return D.stat[n]; }).sort(function (a, b) { return b.plays.length - a.plays.length || (a.name < b.name ? -1 : 1); });
+  if (!all.length) return `<div class='card empty'>곡이 아직 없어</div>`;
+  const rank = {};
+  all.forEach(function (s, i) { rank[s.name] = i + 1; });
+  const q = norm(SEARCH);
+  const list = q ? all.filter(function (s) { return norm(s.name).indexOf(q) >= 0; }) : all;
+  if (!list.length) return `<div class='card empty'>'${esc(SEARCH)}' 들어간 곡이 없어</div>`;
+  return `<div class='card' style='padding:4px 16px'>` + list.map(function (s) {
+    let dates = '';
+    if (q && s.plays.length) {
+      dates = `<div>` + s.plays.slice(0, 6).map(function (p) { return `<span class='mini'>${esc(short(p.date))} ${esc(showName(p.k))}</span>`; }).join('') + (s.plays.length > 6 ? `<span class='mini'>+${s.plays.length - 6}</span>` : '') + `</div>`;
+    }
+    return `<div class='sl tap' data-go='song' data-id='${esc(s.name)}'><span class='rank'>${s.plays.length ? rank[s.name] : '·'}</span><div class='sinfo'><div class='st'>${esc(s.name)}${isRare(s) ? `<span class='tag rare'>레어</span>` : ''}${s.known ? '' : `<span class='tag warn'>목록에 없음</span>`}</div>${s.album && !q ? `<div class='sm'>${esc(s.album)}</div>` : ''}${dates}</div><span class='cnt'>${s.plays.length}<small>회</small></span></div>`;
+  }).join('') + `</div>`;
+}
+function vSongs() {
+  return `<div class='search'><span>🔍</span><input id='q' placeholder='곡 이름으로 찾기' value='${esc(SEARCH)}' autocomplete='off'></div>` + sec('라이브 랭킹', `<button class='btn2 on' data-act='newSong'>+ 곡 추가</button>`, 'Ranking') + `<div id='songlist'>${songListHtml()}</div>`;
+}
+function vSong() {
+  const s = D.stat[PARAM];
+  if (!s) return `<div class='empty'>곡을 찾을 수 없어</div>`;
+  const t = today();
+  const past = s.plays.filter(function (p) { return p.date <= t; });
+  let h = `<div class='hero' style='margin-top:4px'>${sparkles()}<div class='kick'>Song${isRare(s) ? `<span class='pill yel'>레어곡</span>` : ''}</div><div class='title' style='font-size:23px;padding-right:0'>${esc(s.name)}</div>${s.album ? `<div class='meta'>💿 ${esc(s.album)}</div>` : ''}<div class='actions'>${s.known ? `<button class='btn2 glass' data-act='editSong'>✏️ 수정</button><button class='btn2 glass danger' data-act='delSong'>${CONFIRM === 'delSong' ? '한 번 더 누르면 삭제' : '🗑 삭제'}</button>` : `<button class='btn2 yel' data-act='addUnknown'>+ 곡 목록에 추가</button>`}</div></div>`;
+  h += `<div class='stats'><div class='stat'><b>${past.length}</b><span>라이브 횟수</span></div><div class='stat'><b style='font-size:19px;line-height:1.75'>${past.length ? short(past[past.length - 1].date) : '-'}</b><span>첫 라이브</span></div><div class='stat'><b>${s.rest >= 0 ? s.rest : '-'}</b><span>공연째 쉬는 중</span></div></div>`;
+  h += sec('라이브 기록', '', 'History');
+  if (!s.plays.length) return h + `<div class='card empty'>아직 라이브 기록이 없어</div>`;
+  return h + `<div class='card' style='padding:4px 16px'>` + s.plays.map(function (p) {
+    const venue = (D.showMap[p.k] || {})['장소'] || '';
+    return `<div class='srow tap' data-go='show' data-id='${esc(p.k)}'>${dblk(p.date, true)}<div class='sinfo'><div class='st'>${esc(showName(p.k))}</div><div class='sm'>${venue ? esc(venue) + ' · ' : ''}${esc(p.order)}번째${p.encore ? ' · 앵콜' : ''}${gapTxt(p) ? ' · ' + gapTxt(p) : ''}</div>${p.memo ? `<div class='sm' style='color:var(--ink)'>${esc(p.memo)}</div>` : ''}</div><span class='chev'>›</span></div>`;
+  }).join('') + `</div>`;
+}
+function vStats() {
+  const t = today();
+  const past = D.shows.filter(function (s) { return s['날짜'] <= t; }).sort(asc);
+  if (!past.length) return sec('통계', '', 'Stats') + `<div class='card empty'>아직 지난 공연 기록이 없어</div>`;
+  const withSet = past.filter(function (s) { return (D.setBy[s.k] || []).length; });
+  const totalSongs = withSet.reduce(function (a, s) { return a + D.setBy[s.k].length; }, 0);
+  const avg = withSet.length ? Math.round(totalSongs / withSet.length * 10) / 10 : 0;
+  const longest = withSet.slice().sort(function (a, b) { return D.setBy[b.k].length - D.setBy[a.k].length; })[0];
+  let h = sec('한눈에 보기', '', 'Overview') + `<div class='stats' style='margin-top:0'><div class='stat'><b>${past.length}</b><span>지난 공연</span></div><div class='stat'><b>${avg}</b><span>평균 곡 수</span></div><div class='stat'><b>${longest ? D.setBy[longest.k].length : '-'}</b><span>최장 셋리</span></div></div>`;
+  if (longest) h += `<div class='card tap' data-go='show' data-id='${esc(longest.k)}' style='margin-top:10px;padding:12px 16px'><div class='row'><div class='sinfo'><div class='sm' style='margin:0'>🏆 최장 셋리</div><div class='st' style='margin-top:2px'>${esc(longest['공연명'])} <span class='sub' style='font-weight:500'>${esc(short(longest['날짜']))}</span></div></div><span class='chev'>›</span></div></div>`;
+  const first = past[0]['날짜'].slice(0, 7), lastM = t.slice(0, 7);
+  const months = [];
+  let yy = Number(first.slice(0, 4)), mm = Number(first.slice(5, 7));
+  const ly = Number(lastM.slice(0, 4)), lm = Number(lastM.slice(5, 7));
+  while ((yy < ly || (yy === ly && mm <= lm)) && months.length < 120) { months.push(yy + '-' + p2(mm)); mm++; if (mm > 12) { mm = 1; yy++; } }
+  const mc = {};
+  past.forEach(function (s) { const k = s['날짜'].slice(0, 7); mc[k] = (mc[k] || 0) + 1; });
+  const mx = Math.max.apply(null, months.map(function (k) { return mc[k] || 0; }).concat([1]));
+  h += sec('월별 공연', '', 'Monthly') + `<div class='card'><div class='chart' id='chart'>` + months.map(function (k, i) {
+    const c = mc[k] || 0, m = Number(k.slice(5, 7));
+    const lab = (m === 1 || i === 0) ? k.slice(2, 4) + '.' + m : m + '월';
+    return `<div class='col'><div class='cv'>${c || ''}</div><div class='cb${c === mx && c ? ' hi' : ''}' style='height:${c ? Math.round(c / mx * 110) : 3}px;${c ? '' : 'opacity:.2'}'></div><div class='cl'>${lab}</div></div>`;
+  }).join('') + `</div></div>`;
+  const yc = {};
+  past.forEach(function (s) { const y = s['날짜'].slice(0, 4); yc[y] = (yc[y] || 0) + 1; });
+  const ys = Object.keys(yc).sort();
+  if (ys.length > 1) h += `<div class='chips' style='margin:-4px 2px 0'>` + ys.map(function (y) { return `<span class='mini' style='font-size:13px;padding:5px 11px'>${y}년 ${yc[y]}회</span>`; }).join('') + `</div>`;
+  const vc = {};
+  past.forEach(function (s) { if (s['장소']) vc[s['장소']] = (vc[s['장소']] || 0) + 1; });
+  const vs = Object.keys(vc).sort(function (a, b) { return vc[b] - vc[a]; }).slice(0, 10);
+  if (vs.length) {
+    const vmax = vc[vs[0]];
+    h += sec('공연장 랭킹', '', 'Venues') + `<div class='card' style='padding:4px 16px'>` + vs.map(function (v, i) { return `<div class='sl'><span class='rank'>${i + 1}</span><div class='sinfo'><div class='st' style='font-weight:600'>${esc(v)}</div><div class='bar' style='margin-top:6px'><div style='width:${Math.round(vc[v] / vmax * 100)}%'></div></div></div><span class='cnt'>${vc[v]}<small>회</small></span></div>`; }).join('') + `</div>`;
+  }
+  if (withSet.length >= 2) {
+    const op = {}, cl = {}, en = {}, pr = {};
+    withSet.forEach(function (s) {
+      const set = D.setBy[s.k];
+      const a = set[0]['곡명'], z = set[set.length - 1]['곡명'];
+      op[a] = (op[a] || 0) + 1; cl[z] = (cl[z] || 0) + 1;
+      set.forEach(function (r, i) {
+        if (r['앵콜'] === 'O') en[r['곡명']] = (en[r['곡명']] || 0) + 1;
+        if (i > 0) { const pk = set[i - 1]['곡명'] + ' → ' + r['곡명']; pr[pk] = (pr[pk] || 0) + 1; }
+      });
+    });
+    const top = function (o, n, min) { return Object.keys(o).filter(function (k) { return o[k] >= (min || 1); }).sort(function (a, b) { return o[b] - o[a]; }).slice(0, n); };
+    const block = function (title, o, n, min) {
+      const ks = top(o, n, min);
+      if (!ks.length) return '';
+      return `<div class='pt'><div class='ptt'>${title}</div>` + ks.map(function (k) { return `<div class='row' style='padding:4px 0'><span style='font-weight:600;font-size:14px'>${esc(k)}</span><span class='dpill'>${o[k]}회</span></div>`; }).join('') + `</div>`;
+    };
+    h += sec('셋리 패턴', '', 'Patterns') + `<div class='card'>` + block('🎬 오프닝 단골', op, 3) + block('🌙 마지막 곡 단골', cl, 3) + block('🔁 앵콜 단골', en, 3) + block('🔗 자주 붙어 나오는 조합', pr, 3, 2) + `</div>`;
+  }
+  const all = D.songs.map(function (s) { return s['곡명']; });
+  const unplayed = all.filter(function (n) { return !(D.stat[n] && D.stat[n].plays.some(function (p) { return p.date <= t; })); });
+  if (unplayed.length) h += sec('아직 라이브 기록 없는 곡', '', 'Not yet') + `<div class='card'><div class='chips'>` + unplayed.map(function (x) { return `<span class='mini tap' data-go='song' data-id='${esc(x)}' style='font-size:13px;padding:5px 11px;margin:0'>${esc(x)}</span>`; }).join('') + `</div></div>`;
+  return h;
+}
+function vForm() {
+  if (FORM.type === 'show') {
+    const s = FORM.orig ? (D.showMap[FORM.orig] || {}) : {};
+    return sec(FORM.orig ? '공연 수정' : '공연 추가', '', 'Show') + `<div class='card'><label>날짜 *</label><input id='f_date' type='date' value='${esc(s['날짜'] || '')}'><label>공연명 *</label><input id='f_name' value='${esc(s['공연명'] || '')}'><label>장소</label><input id='f_venue' value='${esc(s['장소'] || '')}'><label>시간</label><input id='f_time' type='time' value='${esc(s['시간'] || '')}'><label>회차 (낮/밤 공연 있을 때만)</label><input id='f_round' value='${esc(s['회차'] || '')}' placeholder='예: 낮, 밤'><label>예매 링크</label><input id='f_link' value='${esc(s['예매 링크'] || '')}'><label>예매 오픈일</label><input id='f_open' type='date' value='${esc(s['예매 오픈일'] || '')}'><label>비고</label><input id='f_note' value='${esc(s['비고'] || '')}'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveShow'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
+  }
+  const g = FORM.orig ? (D.songs.filter(function (x) { return x['곡명'] === FORM.orig; })[0] || {}) : {'곡명': FORM.name || ''};
+  return sec(FORM.orig ? '곡 수정' : '곡 추가', '', 'Song') + `<div class='card'><label>곡명 *</label><input id='s_name' value='${esc(g['곡명'] || '')}'><label>앨범</label><input id='s_album' value='${esc(g['앨범'] || '')}'><label>발매일</label><input id='s_rel' type='date' value='${esc(g['발매일'] || '')}'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveSong'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
+}
+
+function act(a, id) {
+  if (a.indexOf('st') === 0 && a !== 'story') {
+    if (!STORY) return;
+    if (a === 'stClose') { closeStory(); return; }
+    if (a === 'stStyle') { STORY.style = id; storyUI(); return; }
+    if (a === 'stSave') { saveStory(); return; }
+    return;
+  }
+  if (['delShow', 'delSong', 'delMsg'].indexOf(a) < 0) CONFIRM = null;
+  if (a === 'boing') {
+    const el = document.querySelector(".mem[data-id='" + id + "'] .mimg");
+    if (el) { el.classList.remove('boing'); void el.offsetWidth; el.classList.add('boing'); }
+    burst(id);
+    return;
+  }
+  if (a === 'story') { openStory(PARAM); return; }
+  if (a === 'luck') { try { localStorage.setItem('gx_luck', today()); } catch (e) {} LUCKFLIP = true; render(); return; }
+  if (a === 'calm') { const b = CAL || today().slice(0, 7); let y = Number(b.slice(0, 4)), m = Number(b.slice(5, 7)) + Number(id); if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } CAL = y + '-' + p2(m); render(); return; }
+  if (a === 'back') { back(); return; }
+  if (a === 'reload') { load(); return; }
+  if (a === 'refreshVisits') { VISITS = null; render(); loadVisits(); return; }
+  if (a === 'moreMsg') { MSGN += 10; render(); return; }
+  if (a === 'seg') { SHOWSEG = id; render(); return; }
+  if (a === 'allPast') { SHOWSEG = 'past'; tab('shows'); return; }
+  if (a === 'allUp') { SHOWSEG = 'up'; tab('shows'); return; }
+  if (a === 'newShow') { FORM = {type: 'show', orig: null}; go('form'); return; }
+  if (a === 'editShow') { FORM = {type: 'show', orig: PARAM}; go('form'); return; }
+  if (a === 'newSong') { FORM = {type: 'song', orig: null}; go('form'); return; }
+  if (a === 'editSong') { FORM = {type: 'song', orig: PARAM}; go('form'); return; }
+  if (a === 'addUnknown') { FORM = {type: 'song', orig: null, name: PARAM}; go('form'); return; }
+
+  if (a === 'addMsg') {
+    const text = val('mText'), name = val('mName');
+    if (!text) { toast('한마디를 적어줘'); return; }
+    if (name) { MYNAME = name; try { localStorage.setItem('gx_name', name); } catch (e) {} }
+    const tm = nowStr();
+    document.getElementById('mText').blur();
+    call(function () { D.messages.push({'시간': tm, '이름': name, '내용': text}); }, 'addMessage', [name, text, tm], '남겼어 💬');
+    return;
+  }
+  if (a === 'delMsg') {
+    if (CONFIRM !== 'delMsg:' + id) { CONFIRM = 'delMsg:' + id; render(); return; }
+    const m = D.messages.filter(function (x) { return msgKey(x) === id; })[0];
+    if (!m) { CONFIRM = null; render(); return; }
+    call(function () { D.messages = D.messages.filter(function (x) { return x !== m; }); CONFIRM = null; }, 'deleteMessage', [m['시간'], m['이름'] || '', m['내용']], '삭제 완료');
+    return;
+  }
+  if (a === 'saveShow') {
+    const s = {'날짜': val('f_date'), '회차': val('f_round'), '시간': val('f_time'), '공연명': val('f_name'), '장소': val('f_venue'), '예매 링크': val('f_link'), '예매 오픈일': val('f_open'), '비고': val('f_note')};
+    if (!s['날짜'] || !s['공연명']) { toast('날짜랑 공연명은 꼭 적어줘'); return; }
+    const orig = FORM.orig, nk = key(s['날짜'], s['회차']);
+    if (nk !== orig && D.showMap[nk]) { toast('같은 날짜·회차 공연이 이미 있어'); return; }
+    document.activeElement && document.activeElement.blur();
+    call(function () {
+      if (orig) {
+        const i = D.shows.findIndex(function (x) { return x.k === orig; });
+        if (i >= 0) D.shows[i] = s; else D.shows.push(s);
+        if (orig !== nk) { const p = orig.split('|'); D.sets.concat(D.reviews).forEach(function (r) { if (sameKey(r, p)) { r['날짜'] = s['날짜']; r['회차'] = s['회차']; } }); }
+        HIST.pop();
+      } else D.shows.push(s);
+      VIEW = 'show'; PARAM = nk; FORM = null; REVEAL = true; window.scrollTo(0, 0);
+    }, 'saveShow', [orig || '', s], orig ? '수정 완료' : '공연 추가 완료');
+    return;
+  }
+  if (a === 'saveSong') {
+    const s = {'곡명': val('s_name'), '앨범': val('s_album'), '발매일': val('s_rel')};
+    if (!s['곡명']) { toast('곡명은 꼭 적어줘'); return; }
+    const orig = FORM.orig;
+    if (s['곡명'] !== orig && D.songs.some(function (x) { return x['곡명'] === s['곡명']; })) { toast('이미 있는 곡이야'); return; }
+    document.activeElement && document.activeElement.blur();
+    call(function () {
+      if (orig) {
+        const i = D.songs.findIndex(function (x) { return x['곡명'] === orig; });
+        if (i >= 0) D.songs[i] = s; else D.songs.push(s);
+        if (orig !== s['곡명']) D.sets.forEach(function (r) { if (r['곡명'] === orig) r['곡명'] = s['곡명']; });
+        HIST.pop();
+      } else D.songs.push(s);
+      VIEW = 'song'; PARAM = s['곡명']; FORM = null; REVEAL = true; window.scrollTo(0, 0);
+    }, 'saveSong', [orig || '', s], orig ? '수정 완료' : '곡 추가 완료');
+    return;
+  }
+  if (a === 'delShow') {
+    if (CONFIRM !== 'delShow') { CONFIRM = 'delShow'; render(); return; }
+    const k = PARAM, p = k.split('|');
+    call(function () {
+      D.shows = D.shows.filter(function (x) { return x.k !== k; });
+      D.sets = D.sets.filter(function (r) { return !sameKey(r, p); });
+      D.reviews = D.reviews.filter(function (r) { return !sameKey(r, p); });
+      CONFIRM = null; const h = HIST.pop(); VIEW = h ? h[0] : 'shows'; PARAM = h ? h[1] : null; REVEAL = true; window.scrollTo(0, 0);
+    }, 'deleteShow', [k], '삭제 완료');
+    return;
+  }
+  if (a === 'delSong') {
+    if (CONFIRM !== 'delSong') { CONFIRM = 'delSong'; render(); return; }
+    const n = PARAM;
+    call(function () {
+      D.songs = D.songs.filter(function (x) { return x['곡명'] !== n; });
+      CONFIRM = null; const h = HIST.pop(); VIEW = h ? h[0] : 'songs'; PARAM = h ? h[1] : null; REVEAL = true; window.scrollTo(0, 0);
+    }, 'deleteSong', [n], '삭제 완료');
+    return;
+  }
+  if (a === 'editSet') { SETEDIT = {items: (D.setBy[PARAM] || []).map(function (r) { return {name: r['곡명'], encore: r['앵콜'] === 'O', memo: r['메모'] || ''}; })}; render(); return; }
+  if (a === 'cancelSet') { SETEDIT = null; render(); return; }
+  if (a === 'addItem') { SETEDIT.items.push({name: id, encore: false, memo: ''}); render(); return; }
+  if (a === 'addFree') { const n = val('freeSong'); if (!n) return; SETEDIT.items.push({name: n, encore: false, memo: ''}); render(); return; }
+  if (a === 'up' || a === 'down') { const i = Number(id), j = a === 'up' ? i - 1 : i + 1; if (j < 0 || j >= SETEDIT.items.length) return; const tmp = SETEDIT.items[i]; SETEDIT.items[i] = SETEDIT.items[j]; SETEDIT.items[j] = tmp; render(); return; }
+  if (a === 'enc') { const it = SETEDIT.items[Number(id)]; it.encore = !it.encore; render(); return; }
+  if (a === 'del') { SETEDIT.items.splice(Number(id), 1); render(); return; }
+  if (a === 'saveSet') {
+    const p = PARAM.split('|'), items = SETEDIT.items.slice();
+    call(function () {
+      D.sets = D.sets.filter(function (r) { return !sameKey(r, p); });
+      items.forEach(function (it, i) { D.sets.push({'날짜': p[0], '회차': p[1] || '', '순서': String(i + 1), '곡명': it.name, '앵콜': it.encore ? 'O' : 'X', '메모': it.memo || ''}); });
+      const have = {};
+      D.songs.forEach(function (g) { have[g['곡명']] = true; });
+      items.forEach(function (it) { if (!have[it.name]) { have[it.name] = true; D.songs.push({'곡명': it.name, '앨범': '', '발매일': ''}); } });
+      SETEDIT = null;
+    }, 'saveSet', [p[0], p[1] || '', items], '셋리 저장 완료');
+    return;
+  }
+}
+
+document.addEventListener('click', function (e) {
+  const t = e.target.closest('[data-tab]');
+  if (t) { tab(t.dataset.tab); return; }
+  const b = e.target.closest('[data-act]');
+  if (b) { act(b.dataset.act, b.dataset.id); return; }
+  const g = e.target.closest('[data-go]');
+  if (g) go(g.dataset.go, g.dataset.id);
+});
+document.addEventListener('input', function (e) {
+  const id = e.target.id;
+  if (STORY && (id === 'stdim' || id === 'stzoom' || id === 'stpos')) {
+    const v = Number(e.target.value) / 100;
+    if (id === 'stdim') STORY.dim = v; else if (id === 'stzoom') STORY.zoom = v; else STORY.pos = v;
+    drawPreview();
+    return;
+  }
+  if (id === 'q') { SEARCH = e.target.value; const box = document.getElementById('songlist'); if (box) box.innerHTML = songListHtml(); return; }
+  const m = e.target.dataset ? e.target.dataset.memo : undefined;
+  if (m !== undefined && SETEDIT) SETEDIT.items[Number(m)].memo = e.target.value;
+});
+document.addEventListener('change', function (e) {
+  if (e.target.id === 'stfile' && e.target.files && e.target.files[0]) loadStoryPhoto(e.target.files[0]);
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter' && e.target.id === 'mText') { e.preventDefault(); act('addMsg'); }
+  if (e.key === 'Enter' && e.target.id === 'q') { e.target.blur(); }
+  if (e.key === 'Escape' && STORY) closeStory();
+});
+// 로고 5번 연타 → 관리자 모드 (방문 기록 보기, 내 방문은 집계 제외)
+document.getElementById('logo').addEventListener('click', function () {
+  const now = Date.now();
+  TAPS = TAPS.filter(function (x) { return now - x < 3000; });
+  TAPS.push(now);
+  if (TAPS.length < 5) return;
+  TAPS = [];
+  ME = !ME;
+  try { if (ME) localStorage.setItem('gx_me', '1'); else localStorage.removeItem('gx_me'); } catch (e) {}
+  toast(ME ? '👀 관리자 모드 ON · 이 폰은 방문 집계에서 빠져' : '관리자 모드 OFF');
+  VISITS = null;
+  tab('home');
+  loadVisits();
+});
+
+render();
+try { const c = localStorage.getItem('gx_cache'); if (c) { D = JSON.parse(c); build(); render(); } } catch (e) { D = null; }
+load();
+logVisit();
+loadVisits();
+</script>
+</body>
+</html>
