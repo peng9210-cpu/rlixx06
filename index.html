@@ -209,6 +209,16 @@ label{font-size:13px;color:var(--sub);font-weight:600}
 .sl2 span{width:52px;flex:none}
 .sl2 input{margin:0;padding:0;border:none;background:none;accent-color:var(--yel)}
 .pick{flex:1;color:#FFF8EC;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,248,236,.1);border-radius:14px;padding:11px;font-size:14px;font-weight:700;cursor:pointer}
+textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:14px;font-size:15px;margin:6px 0 8px;background:var(--bg);font-family:inherit;color:var(--ink);min-height:110px;resize:vertical;line-height:1.5}
+textarea:focus{outline:none;border-color:var(--ink);background:#fff}
+.vid{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;margin-top:12px}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlink{display:flex;align-items:center;gap:12px;border:1.5px dashed #D8CDBC;border-radius:20px;padding:14px 16px;margin-top:12px;color:var(--sub);font-size:13px;cursor:pointer;background:none;width:100%;text-align:left}
+.vlink b{display:block;color:var(--ink);font-size:14px}
+.seek{flex:none;border:none;background:var(--ink);color:var(--yel);font-size:12px;font-weight:800;padding:6px 10px;border-radius:99px;cursor:pointer;font-variant-numeric:tabular-nums;text-decoration:none}
+.tsrow{display:flex;gap:6px;flex-basis:100%;margin-top:4px}
+.tsrow input{margin:0}
+.tsrow input.t{flex:none;width:96px;text-align:center;font-variant-numeric:tabular-nums}
 .sthint{font-size:11px;color:rgba(255,248,236,.45);text-align:center;margin-top:8px}
 </style>
 </head>
@@ -271,6 +281,34 @@ function toast(m) { const t = document.getElementById('toast'); t.textContent = 
 function sync() { document.getElementById('sync').textContent = PENDING ? '저장 중…' : LOADING ? '동기화 중…' : ''; }
 function editing() { const ae = document.activeElement; return VIEW === 'form' || !!SETEDIT || !!STORY || !!(ae && ae.tagName === 'INPUT' && ae.value); }
 function norm(s) { return String(s || '').toLowerCase().replace(/\s/g, ''); }
+// 유튜브 주소에서 영상 ID 뽑기
+function ytId(u) {
+  u = String(u || '').trim();
+  const m = u.match(/(?:youtu\.be\/|[?&]v=|\/(?:live|shorts|embed)\/)([\w-]{11})/);
+  return m ? m[1] : (/^[\w-]{11}$/.test(u) ? u : '');
+}
+// '1:04:12' → 3852초
+function tsec(t) {
+  const m = String(t || '').trim().match(/^(?:(\d{1,2}):)?(\d{1,3}):(\d{2})$/);
+  return m ? Number(m[1] || 0) * 3600 + Number(m[2]) * 60 + Number(m[3]) : -1;
+}
+function fmtT(n) { const h = Math.floor(n / 3600), m = Math.floor(n % 3600 / 60), x = n % 60; return (h ? h + ':' + p2(m) : m) + ':' + p2(x); }
+function chapters(set) { return set.filter(function (r) { return tsec(r['타임']) >= 0; }).map(function (r) { return fmtT(tsec(r['타임'])) + ' ' + r['곡명']; }).join('\n'); }
+function parseTs(text) {
+  const out = [];
+  String(text || '').split(/\n/).forEach(function (line) {
+    const m = line.match(/(?:(\d{1,2}):)?(\d{1,3}):(\d{2})/);
+    if (!m) return;
+    const name = line.replace(m[0], '').replace(/^[\s\d.)\-–—·|:]+/, '').replace(/[\s\-–—·|]+$/, '').trim();
+    out.push({sec: Number(m[1] || 0) * 3600 + Number(m[2]) * 60 + Number(m[3]), name: name});
+  });
+  return out;
+}
+function copyText(t) {
+  const ok = function () { toast('복사했어! 유튜브 설명란에 붙여넣어 📋'); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () { window.prompt('복사해서 써줘', t); });
+  else window.prompt('복사해서 써줘', t);
+}
 function msgKey(m) { return m['시간'] + '|' + m['이름'] + '|' + m['내용']; }
 
 // ---- 서버 통신 ----
@@ -487,7 +525,7 @@ function build() {
       const n = r['곡명'];
       if (!n) return;
       if (!D.stat[n]) D.stat[n] = {name: n, album: '', plays: [], known: false};
-      D.stat[n].plays.push({k: k, date: r['날짜'], order: r['순서'], encore: r['앵콜'] === 'O', memo: r['메모']});
+      D.stat[n].plays.push({k: k, date: r['날짜'], order: r['순서'], encore: r['앵콜'] === 'O', memo: r['메모'], time: r['타임'] || ''});
     });
   });
   D.order = Object.keys(D.setBy).sort();
@@ -813,6 +851,7 @@ function showRow(s, up) {
   const meta = [s['장소'], s['시간'] || s['회차']].filter(Boolean).map(esc).join(' · ');
   let tags = '';
   if (n) tags += `<span class='mini'>🎵 ${n}곡</span>`;
+  if (ytId(s['영상'])) tags += `<span class='mini'>🎬 영상</span>`;
   if (up && s['예매 오픈일'] && s['예매 오픈일'] >= t) { const od = diff(t, s['예매 오픈일']); tags += `<span class='mini yel'>🎟 예매 ${od === 0 ? '오늘' : 'D-' + od}</span>`; }
   const right = up ? `<span class='dpill'>${ddText(diff(t, s['날짜']))}</span>` : `<span class='chev'>›</span>`;
   return `<div class='srow tap' data-go='show' data-id='${esc(s.k)}'>${dblk(s['날짜'])}<div class='sinfo'><div class='st'>${esc(s['공연명'])}</div><div class='sm'>${meta}</div>${tags ? `<div>${tags}</div>` : ''}</div>${right}</div>`;
@@ -888,7 +927,7 @@ function vShows() {
   return h + body + `</div>`;
 }
 function itemRow(it, i) {
-  return `<div class='sl' style='flex-wrap:wrap'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st'>${esc(it.name)}</div></div><span style='display:flex;gap:4px'><button class='btn2' data-act='up' data-id='${i}'>↑</button><button class='btn2' data-act='down' data-id='${i}'>↓</button><button class='btn2 ${it.encore ? 'on' : ''}' data-act='enc' data-id='${i}'>앵콜</button><button class='btn2 danger' data-act='del' data-id='${i}'>✕</button></span><input placeholder='메모 (선택)' data-memo='${i}' value='${esc(it.memo || '')}' style='margin:4px 0 0;flex-basis:100%'></div>`;
+  return `<div class='sl' style='flex-wrap:wrap'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st'>${esc(it.name)}</div></div><span style='display:flex;gap:4px'><button class='btn2' data-act='up' data-id='${i}'>↑</button><button class='btn2' data-act='down' data-id='${i}'>↓</button><button class='btn2 ${it.encore ? 'on' : ''}' data-act='enc' data-id='${i}'>앵콜</button><button class='btn2 danger' data-act='del' data-id='${i}'>✕</button></span><div class='tsrow'><input class='t' placeholder='4:12' data-time='${i}' value='${esc(it.time || '')}' inputmode='numeric'><input placeholder='메모 (선택)' data-memo='${i}' value='${esc(it.memo || '')}'></div></div>`;
 }
 function vShow() {
   const k = PARAM, s = D.showMap[k];
@@ -898,9 +937,14 @@ function vShow() {
   if (SETEDIT) {
     h += sec('셋리 입력', '', 'Setlist');
     h += `<div class='card'><div class='sub'>들은 순서대로 곡을 탭해</div><div class='chips' style='margin:10px 0 12px'>` + D.songs.map(function (g) { return `<button class='chip' data-act='addItem' data-id='${esc(g['곡명'])}'>${esc(g['곡명'])}</button>`; }).join('') + `</div><div class='row'><input id='freeSong' placeholder='목록에 없는 곡은 직접 입력'><button class='btn2' data-act='addFree' style='padding:12px 14px'>추가</button></div>`;
+    h += `<details style='margin-bottom:6px'${SETEDIT.items.length ? '' : ' open'}><summary class='sub' style='cursor:pointer;padding:6px 0;font-weight:700;color:var(--ink)'>⏱ 타임스탬프 통째로 붙여넣기</summary><textarea id='tsPaste' placeholder='0:00 얼리버드\n4:12 좋은맛\n8:30 선샤인'></textarea><div class='sub' style='font-size:12px;margin-bottom:8px'>유튜브 설명란에 쓴 거 그대로 붙여넣으면 돼. 셋리가 비어 있으면 셋리까지 한 번에 만들어줘</div><button class='btn2 on' data-act='applyTs'>시간 채우기</button></details>`;
+    h += `<div class='sub' style='font-size:12px;margin-top:6px'>왼쪽 시간 칸에 영상 속 시작 시간을 적으면 셋리에서 눌러서 바로 볼 수 있어</div>`;
     h += SETEDIT.items.map(itemRow).join('');
     h += `<div class='actions'><button class='btn' data-act='saveSet'>셋리 저장</button><button class='btn gray' data-act='cancelSet'>취소</button></div></div>`;
   } else {
+    const vid = ytId(s['영상']);
+    if (vid) h += sec('공연 풀영상', `<a class='btn2' href='https://youtu.be/${vid}' target='_blank' rel='noopener'>유튜브에서 보기 ↗</a>`, 'Full live') + `<div class='vid' id='vidbox' style='margin-top:0'><iframe id='yt' src='https://www.youtube-nocookie.com/embed/${vid}?rel=0&playsinline=1' title='공연 영상' allow='autoplay; encrypted-media; picture-in-picture; fullscreen' loading='lazy'></iframe></div>`;
+    else if (s['날짜'] <= t) h += `<button class='vlink' data-act='editShow'><span style='font-size:22px'>🎬</span><span><b>공연 풀영상 연결하기</b>유튜브 링크 붙이면 여기서 바로 볼 수 있어</span></button>`;
     if (set.length) h += `<button class='storybtn' data-act='story'><span class='ic'>📸</span><span><b>인스스 셋리카드 만들기</b><small>공연 사진 위에 셋리 얹어서 저장</small></span></button>`;
     h += sec('셋리스트' + (set.length ? ` <span class='sub' style='font-weight:600'>${set.length}곡</span>` : ''), `<button class='btn2' data-act='editSet'>✏️ ${set.length ? '수정' : '셋리 입력'}</button>`, 'Setlist');
     if (!set.length) h += `<div class='card empty'>아직 셋리가 없어<br><span style='font-size:12px'>공연 끝나고 채워줘 🎸</span></div>`;
@@ -910,8 +954,9 @@ function vShow() {
         let pre = '';
         if (r['앵콜'] === 'O' && !enc) { enc = true; pre = `<div class='divider'>Encore</div>`; }
         const pp = (D.stat[r['곡명']] || {plays: []}).plays.filter(function (x) { return x.k === k; })[0], g = pp ? gapTxt(pp) : '';
-        return pre + `<div class='sl tap' data-go='song' data-id='${esc(r['곡명'])}'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st' style='font-weight:600'>${esc(r['곡명'])}${g ? `<span class='tag rare'>${g}</span>` : ''}</div>${r['메모'] ? `<div class='sm'>${esc(r['메모'])}</div>` : ''}</div><span class='chev'>›</span></div>`;
+        return pre + `<div class='sl tap' data-go='song' data-id='${esc(r['곡명'])}'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st' style='font-weight:600'>${esc(r['곡명'])}${g ? `<span class='tag rare'>${g}</span>` : ''}</div>${r['메모'] ? `<div class='sm'>${esc(r['메모'])}</div>` : ''}</div>${vid && tsec(r['타임']) >= 0 ? `<button class='seek' data-act='seek' data-id='${tsec(r['타임'])}'>▶ ${esc(fmtT(tsec(r['타임'])))}</button>` : `<span class='chev'>›</span>`}</div>`;
       }).join('') + `</div>`;
+      if (chapters(set)) h += `<div style='text-align:center'><button class='more' data-act='copyCh'>📋 유튜브 설명란용 타임스탬프 복사</button></div>`;
     }
   }
   return h;
@@ -946,7 +991,7 @@ function vSong() {
   if (!s.plays.length) return h + `<div class='card empty'>아직 라이브 기록이 없어</div>`;
   return h + `<div class='card' style='padding:4px 16px'>` + s.plays.map(function (p) {
     const venue = (D.showMap[p.k] || {})['장소'] || '';
-    return `<div class='srow tap' data-go='show' data-id='${esc(p.k)}'>${dblk(p.date, true)}<div class='sinfo'><div class='st'>${esc(showName(p.k))}</div><div class='sm'>${venue ? esc(venue) + ' · ' : ''}${esc(p.order)}번째${p.encore ? ' · 앵콜' : ''}${gapTxt(p) ? ' · ' + gapTxt(p) : ''}</div>${p.memo ? `<div class='sm' style='color:var(--ink)'>${esc(p.memo)}</div>` : ''}</div><span class='chev'>›</span></div>`;
+    return `<div class='srow tap' data-go='show' data-id='${esc(p.k)}'>${dblk(p.date, true)}<div class='sinfo'><div class='st'>${esc(showName(p.k))}</div><div class='sm'>${venue ? esc(venue) + ' · ' : ''}${esc(p.order)}번째${p.encore ? ' · 앵콜' : ''}${gapTxt(p) ? ' · ' + gapTxt(p) : ''}</div>${p.memo ? `<div class='sm' style='color:var(--ink)'>${esc(p.memo)}</div>` : ''}</div>${ytId((D.showMap[p.k] || {})['영상']) && tsec(p.time) >= 0 ? `<a class='seek' href='https://youtu.be/${ytId(D.showMap[p.k]['영상'])}?t=${tsec(p.time)}' target='_blank' rel='noopener'>▶ 보기</a>` : `<span class='chev'>›</span>`}</div>`;
   }).join('') + `</div>`;
 }
 function vStats() {
@@ -1010,7 +1055,7 @@ function vStats() {
 function vForm() {
   if (FORM.type === 'show') {
     const s = FORM.orig ? (D.showMap[FORM.orig] || {}) : {};
-    return sec(FORM.orig ? '공연 수정' : '공연 추가', '', 'Show') + `<div class='card'><label>날짜 *</label><input id='f_date' type='date' value='${esc(s['날짜'] || '')}'><label>공연명 *</label><input id='f_name' value='${esc(s['공연명'] || '')}'><label>장소</label><input id='f_venue' value='${esc(s['장소'] || '')}'><label>시간</label><input id='f_time' type='time' value='${esc(s['시간'] || '')}'><label>회차 (낮/밤 공연 있을 때만)</label><input id='f_round' value='${esc(s['회차'] || '')}' placeholder='예: 낮, 밤'><label>예매 링크</label><input id='f_link' value='${esc(s['예매 링크'] || '')}'><label>예매 오픈일</label><input id='f_open' type='date' value='${esc(s['예매 오픈일'] || '')}'><label>비고</label><input id='f_note' value='${esc(s['비고'] || '')}'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveShow'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
+    return sec(FORM.orig ? '공연 수정' : '공연 추가', '', 'Show') + `<div class='card'><label>날짜 *</label><input id='f_date' type='date' value='${esc(s['날짜'] || '')}'><label>공연명 *</label><input id='f_name' value='${esc(s['공연명'] || '')}'><label>장소</label><input id='f_venue' value='${esc(s['장소'] || '')}'><label>시간</label><input id='f_time' type='time' value='${esc(s['시간'] || '')}'><label>회차 (낮/밤 공연 있을 때만)</label><input id='f_round' value='${esc(s['회차'] || '')}' placeholder='예: 낮, 밤'><label>예매 링크</label><input id='f_link' value='${esc(s['예매 링크'] || '')}'><label>예매 오픈일</label><input id='f_open' type='date' value='${esc(s['예매 오픈일'] || '')}'><label>비고</label><input id='f_note' value='${esc(s['비고'] || '')}'><label>공연 풀영상 (유튜브 링크)</label><input id='f_video' value='${esc(s['영상'] || '')}' placeholder='https://youtu.be/…' inputmode='url'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveShow'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
   }
   const g = FORM.orig ? (D.songs.filter(function (x) { return x['곡명'] === FORM.orig; })[0] || {}) : {'곡명': FORM.name || ''};
   return sec(FORM.orig ? '곡 수정' : '곡 추가', '', 'Song') + `<div class='card'><label>곡명 *</label><input id='s_name' value='${esc(g['곡명'] || '')}'><label>앨범</label><input id='s_album' value='${esc(g['앨범'] || '')}'><label>발매일</label><input id='s_rel' type='date' value='${esc(g['발매일'] || '')}'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveSong'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
@@ -1032,6 +1077,35 @@ function act(a, id) {
     return;
   }
   if (a === 'story') { openStory(PARAM); return; }
+  if (a === 'seek') {
+    const f = document.getElementById('yt'), v = ytId((D.showMap[PARAM] || {})['영상']);
+    if (!f || !v) return;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + v + '?rel=0&playsinline=1&autoplay=1&start=' + Number(id);
+    document.getElementById('vidbox').scrollIntoView({behavior: 'smooth', block: 'center'});
+    return;
+  }
+  if (a === 'copyCh') { copyText(chapters(D.setBy[PARAM] || [])); return; }
+  if (a === 'applyTs') {
+    const ps = parseTs(val('tsPaste'));
+    if (!ps.length) { toast('시간이 들어간 줄을 못 찾았어 (예: 4:12 곡이름)'); return; }
+    if (!SETEDIT.items.length) {
+      ps.forEach(function (x) { if (x.name) SETEDIT.items.push({name: x.name, encore: false, memo: '', time: fmtT(x.sec)}); });
+      toast(SETEDIT.items.length + '곡 셋리 만들었어 ✨ 앵콜만 표시해줘');
+    } else {
+      let hit = 0;
+      const used = {};
+      ps.forEach(function (x, i) {
+        let j = SETEDIT.items.findIndex(function (it, k) { return !used[k] && x.name && norm(it.name) === norm(x.name); });
+        if (j < 0) j = SETEDIT.items.findIndex(function (it, k) { return !used[k] && x.name && (norm(it.name).indexOf(norm(x.name)) >= 0 || norm(x.name).indexOf(norm(it.name)) >= 0); });
+        if (j < 0 && ps.length === SETEDIT.items.length && !used[i]) j = i;
+        if (j < 0) return;
+        used[j] = true; SETEDIT.items[j].time = fmtT(x.sec); hit++;
+      });
+      toast(hit + '곡 시간 채웠어 ⏱');
+    }
+    render();
+    return;
+  }
   if (a === 'luck') { try { localStorage.setItem('gx_luck', today()); } catch (e) {} LUCKFLIP = true; render(); return; }
   if (a === 'calm') { const b = CAL || today().slice(0, 7); let y = Number(b.slice(0, 4)), m = Number(b.slice(5, 7)) + Number(id); if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } CAL = y + '-' + p2(m); render(); return; }
   if (a === 'back') { back(); return; }
@@ -1064,7 +1138,7 @@ function act(a, id) {
     return;
   }
   if (a === 'saveShow') {
-    const s = {'날짜': val('f_date'), '회차': val('f_round'), '시간': val('f_time'), '공연명': val('f_name'), '장소': val('f_venue'), '예매 링크': val('f_link'), '예매 오픈일': val('f_open'), '비고': val('f_note')};
+    const s = {'날짜': val('f_date'), '회차': val('f_round'), '시간': val('f_time'), '공연명': val('f_name'), '장소': val('f_venue'), '예매 링크': val('f_link'), '예매 오픈일': val('f_open'), '비고': val('f_note'), '영상': val('f_video')};
     if (!s['날짜'] || !s['공연명']) { toast('날짜랑 공연명은 꼭 적어줘'); return; }
     const orig = FORM.orig, nk = key(s['날짜'], s['회차']);
     if (nk !== orig && D.showMap[nk]) { toast('같은 날짜·회차 공연이 이미 있어'); return; }
@@ -1117,7 +1191,7 @@ function act(a, id) {
     }, 'deleteSong', [n], '삭제 완료');
     return;
   }
-  if (a === 'editSet') { SETEDIT = {items: (D.setBy[PARAM] || []).map(function (r) { return {name: r['곡명'], encore: r['앵콜'] === 'O', memo: r['메모'] || ''}; })}; render(); return; }
+  if (a === 'editSet') { SETEDIT = {items: (D.setBy[PARAM] || []).map(function (r) { return {name: r['곡명'], encore: r['앵콜'] === 'O', memo: r['메모'] || '', time: r['타임'] || ''}; })}; render(); return; }
   if (a === 'cancelSet') { SETEDIT = null; render(); return; }
   if (a === 'addItem') { SETEDIT.items.push({name: id, encore: false, memo: ''}); render(); return; }
   if (a === 'addFree') { const n = val('freeSong'); if (!n) return; SETEDIT.items.push({name: n, encore: false, memo: ''}); render(); return; }
@@ -1128,7 +1202,7 @@ function act(a, id) {
     const p = PARAM.split('|'), items = SETEDIT.items.slice();
     call(function () {
       D.sets = D.sets.filter(function (r) { return !sameKey(r, p); });
-      items.forEach(function (it, i) { D.sets.push({'날짜': p[0], '회차': p[1] || '', '순서': String(i + 1), '곡명': it.name, '앵콜': it.encore ? 'O' : 'X', '메모': it.memo || ''}); });
+      items.forEach(function (it, i) { D.sets.push({'날짜': p[0], '회차': p[1] || '', '순서': String(i + 1), '곡명': it.name, '앵콜': it.encore ? 'O' : 'X', '메모': it.memo || '', '타임': it.time || ''}); });
       const have = {};
       D.songs.forEach(function (g) { have[g['곡명']] = true; });
       items.forEach(function (it) { if (!have[it.name]) { have[it.name] = true; D.songs.push({'곡명': it.name, '앨범': '', '발매일': ''}); } });
@@ -1157,6 +1231,8 @@ document.addEventListener('input', function (e) {
   if (id === 'q') { SEARCH = e.target.value; const box = document.getElementById('songlist'); if (box) box.innerHTML = songListHtml(); return; }
   const m = e.target.dataset ? e.target.dataset.memo : undefined;
   if (m !== undefined && SETEDIT) SETEDIT.items[Number(m)].memo = e.target.value;
+  const tm = e.target.dataset ? e.target.dataset.time : undefined;
+  if (tm !== undefined && SETEDIT) SETEDIT.items[Number(tm)].time = e.target.value.trim();
 });
 document.addEventListener('change', function (e) {
   if (e.target.id === 'stfile' && e.target.files && e.target.files[0]) loadStoryPhoto(e.target.files[0]);

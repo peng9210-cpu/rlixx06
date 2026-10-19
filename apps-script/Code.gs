@@ -128,7 +128,7 @@ function readRows_(key) {
     if (joined.trim() === '' || joined.indexOf('(예시)') >= 0) continue;
     const o = {};
     t.head.forEach(function (h, j) {
-      o[h] = (h === '시간') ? String(disp[i][j]).trim() : norm_(t.vals[i][j], t.tz);
+      o[h] = (h === '시간' || h === '타임') ? String(disp[i][j]).trim() : norm_(t.vals[i][j], t.tz);
     });
     out.push(o);
   }
@@ -270,7 +270,7 @@ function saveSet(date, round, items) {
     removeWhere_(t, function (i) { return sameShow_(t, i, date, round); });
     items.forEach(function (it, k) {
       t.sh.appendRow(rowFrom_(t.head, {'날짜': txt_(date), '회차': round, '순서': k + 1,
-        '곡명': it.name, '앵콜': it.encore ? 'O' : 'X', '메모': it.memo || ''}));
+        '곡명': it.name, '앵콜': it.encore ? 'O' : 'X', '메모': it.memo || '', '타임': txt_(it.time || '')}));
     });
     const g = open_('songs');
     const have = {};
