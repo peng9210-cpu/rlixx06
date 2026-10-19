@@ -469,6 +469,20 @@ function countUp() {
 }
 
 // ---- 방문 기록 ----
+// 봇은 빼고, 화면을 실제로 3초 이상 본 경우만 방문으로 기록
+function logVisitLater() {
+  if (ME || navigator.webdriver || /bot|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|lighthouse|preview|scan/i.test(navigator.userAgent)) return;
+  let seen = 0, last = document.hidden ? 0 : Date.now(), done = false;
+  const tick = function () {
+    if (done) return;
+    if (!document.hidden && last) { seen += Date.now() - last; last = Date.now(); }
+    if (seen >= 3000) { done = true; document.removeEventListener('visibilitychange', vis); logVisit(); return; }
+    setTimeout(tick, 500);
+  };
+  const vis = function () { if (document.hidden) { if (last) seen += Date.now() - last; last = 0; } else last = Date.now(); };
+  document.addEventListener('visibilitychange', vis);
+  setTimeout(tick, 500);
+}
 function logVisit() {
   if (ME) return;
   let id = '', first = false;
@@ -1280,7 +1294,7 @@ document.getElementById('logo').addEventListener('click', function () {
 render();
 try { const c = localStorage.getItem('gx_cache'); if (c) { D = JSON.parse(c); build(); render(); } } catch (e) { D = null; }
 load();
-logVisit();
+logVisitLater();
 loadVisits();
 </script>
 </body>
