@@ -495,14 +495,14 @@ const SRC = visitSource();
 // 주소창의 꼬리표는 지워서 새로고침·공유할 때 깔끔하게
 try { if (/[?&](utm_|fbclid|from=|igsh)/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
 
-// 봇은 빼고, 화면을 실제로 3초 이상 본 경우만 방문으로 기록
+// 봇은 빼고, 화면을 실제로 2초 이상 본 경우만 방문으로 기록
 function logVisitLater() {
   if (ME || navigator.webdriver || /bot|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|lighthouse|preview|scan/i.test(navigator.userAgent)) return;
   let seen = 0, last = document.hidden ? 0 : Date.now(), done = false;
   const tick = function () {
     if (done) return;
     if (!document.hidden && last) { seen += Date.now() - last; last = Date.now(); }
-    if (seen >= 3000) { done = true; document.removeEventListener('visibilitychange', vis); logVisit(); return; }
+    if (seen >= 2000) { done = true; document.removeEventListener('visibilitychange', vis); logVisit(); return; }
     setTimeout(tick, 500);
   };
   const vis = function () { if (document.hidden) { if (last) seen += Date.now() - last; last = 0; } else last = Date.now(); };
