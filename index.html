@@ -469,6 +469,32 @@ function countUp() {
 }
 
 // ---- 방문 기록 ----
+// 어디서 들어왔는지: 링크 꼬리표(utm) → 앱 안 브라우저 → 이전 페이지 주소 순으로 판단
+function visitSource() {
+  const q = new URLSearchParams(location.search), ua = navigator.userAgent;
+  const from = (q.get('from') || '').trim();
+  if (from) return from.slice(0, 30);
+  const us = (q.get('utm_source') || '').toLowerCase(), uc = (q.get('utm_content') || '').toLowerCase();
+  let ref = '';
+  try { ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''; } catch (e) {}
+  if (ref === location.hostname) ref = '';
+  const isIg = /Instagram/i.test(ua) || us === 'ig' || us === 'instagram' || /instagram\.com$/.test(ref);
+  if (isIg) return uc === 'link_in_bio' ? '인스타 프로필 링크' : '인스타그램';
+  if (/Barcelona|Threads/i.test(ua) || us === 'threads' || /threads\.(net|com)$/.test(ref)) return '스레드';
+  if (/KAKAOTALK/i.test(ua) || /kakao/.test(ref)) return '카카오톡';
+  if (/FBAN|FBAV/i.test(ua) || /facebook\.com$/.test(ref)) return '페이스북';
+  if (/Twitter/i.test(ua) || ref === 't.co' || /(twitter|x)\.com$/.test(ref)) return 'X(트위터)';
+  if (/youtube\.com$|youtu\.be$/.test(ref)) return '유튜브';
+  if (/NAVER/.test(ua) || /naver\.com$/.test(ref)) return '네이버';
+  if (/google\./.test(ref)) return '구글 검색';
+  if (/daum\.net$/.test(ref)) return '다음';
+  if (ref) return ref.slice(0, 30);
+  return '직접 접속';
+}
+const SRC = visitSource();
+// 주소창의 꼬리표는 지워서 새로고침·공유할 때 깔끔하게
+try { if (/[?&](utm_|fbclid|from=|igsh)/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+
 // 봇은 빼고, 화면을 실제로 3초 이상 본 경우만 방문으로 기록
 function logVisitLater() {
   if (ME || navigator.webdriver || /bot|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|lighthouse|preview|scan/i.test(navigator.userAgent)) return;
@@ -487,7 +513,7 @@ function logVisit() {
   if (ME) return;
   let id = '', first = false;
   try { id = localStorage.getItem('gx_dev') || ''; if (!id) { id = Math.random().toString(36).slice(2, 8); localStorage.setItem('gx_dev', id); first = true; } } catch (e) { id = 'x' + Math.random().toString(36).slice(2, 7); }
-  apiPost('logVisit', [id, first]).catch(function () {});
+  apiPost('logVisit', [id, first, SRC]).catch(function () {});
 }
 function loadVisits() {
   if (!ME) return;
@@ -877,8 +903,17 @@ function meCard() {
   let body;
   if (!VISITS) body = `<div class='sm' style='margin-top:6px'>불러오는 중…</div>`;
   else if (VISITS.error) body = `<div class='sm' style='margin-top:6px'>방문 기록을 못 불러왔어</div>`;
-  else body = `<div class='stats' style='margin-top:10px'><div class='stat'><b>${VISITS.todayPeople}</b><span>오늘 들어온 폰</span></div><div class='stat'><b>${VISITS.people}</b><span>지금까지 폰</span></div><div class='stat'><b>${VISITS.total}</b><span>전체 방문</span></div></div>${VISITS.last ? `<div class='sm' style='margin-top:8px'>마지막 방문 ${esc(VISITS.last)}</div>` : ''}`;
+  else body = `<div class='stats' style='margin-top:10px'><div class='stat'><b>${VISITS.todayPeople}</b><span>오늘 들어온 폰</span></div><div class='stat'><b>${VISITS.people}</b><span>지금까지 폰</span></div><div class='stat'><b>${VISITS.total}</b><span>전체 방문</span></div></div>${VISITS.last ? `<div class='sm' style='margin-top:8px'>마지막 방문 ${esc(VISITS.last)}</div>` : ''}${srcHtml(VISITS)}`;
   return `<div class='card me'><div class='row'><b style='font-size:14px'>👀 방문 기록 <span class='sub' style='font-weight:500'>나만 보여</span></b><button class='more' data-act='refreshVisits'>새로고침</button></div>${body}</div>`;
+}
+function srcHtml(v) {
+  const src = v.src || {}, td = v.srcToday || {};
+  const ks = Object.keys(src).sort(function (a, b) { return src[b] - src[a]; });
+  if (!ks.length) return `<div class='sm' style='margin-top:12px'>📍 유입 경로는 지금부터 쌓여</div>`;
+  const mx = src[ks[0]];
+  return `<div style='margin-top:14px'><div class='row'><b style='font-size:13px'>📍 유입 경로</b><span class='sm' style='margin:0'>최근 30일 · 방문 수</span></div>` + ks.slice(0, 8).map(function (k) {
+    return `<div style='margin-top:9px'><div class='row' style='font-size:13px'><span style='font-weight:600'>${esc(k)}</span><span><b>${src[k]}</b>${td[k] ? `<span class='sm' style='margin-left:6px'>오늘 +${td[k]}</span>` : ''}</span></div><div class='bar' style='margin-top:5px;height:6px;background:rgba(255,255,255,.7)'><div style='width:${Math.max(4, Math.round(src[k] / mx * 100))}%'></div></div></div>`;
+  }).join('') + `</div>`;
 }
 function msgSection() {
   const all = D.messages || [];

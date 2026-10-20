@@ -53,11 +53,11 @@ function doPost(e) {
   }
 }
 
-function logVisit(dev, first) {
+function logVisit(dev, first, src) {
   try {
     const sh = SpreadsheetApp.openById(IDS.visits).getSheets()[0];
     const now = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
-    sh.appendRow(["'" + now, String(dev || '').slice(0, 12), first ? 'O' : '']);
+    sh.appendRow(["'" + now, String(dev || '').slice(0, 12), first ? 'O' : '', String(src || '').slice(0, 30)]);
   } catch (err) {}
   return true;
 }
@@ -66,13 +66,22 @@ function getVisits() {
   const sh = SpreadsheetApp.openById(IDS.visits).getSheets()[0];
   const rows = sh.getDataRange().getDisplayValues().slice(1).filter(function (r) { return r[1]; });
   const today = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd');
-  const all = {}, td = {};
+  const since = Utilities.formatDate(new Date(Date.now() - 29 * 86400000), 'Asia/Seoul', 'yyyy-MM-dd');
+  const all = {}, td = {}, src = {}, srcToday = {};
   rows.forEach(function (r) {
     all[r[1]] = true;
-    if (String(r[0]).indexOf(today) === 0) td[r[1]] = true;
+    const day = String(r[0]).slice(0, 10);
+    if (day === today) td[r[1]] = true;
+    // 유입 경로는 기록을 시작한 뒤(4번째 칸이 있는 줄)만, 최근 30일
+    const s = String(r[3] || '').trim();
+    if (s && day >= since) {
+      src[s] = (src[s] || 0) + 1;
+      if (day === today) srcToday[s] = (srcToday[s] || 0) + 1;
+    }
   });
   return {total: rows.length, people: Object.keys(all).length,
-    todayPeople: Object.keys(td).length, last: rows.length ? rows[rows.length - 1][0] : ''};
+    todayPeople: Object.keys(td).length, last: rows.length ? rows[rows.length - 1][0] : '',
+    src: src, srcToday: srcToday};
 }
 
 function open_(key) {
