@@ -248,7 +248,8 @@ const API = 'https://script.google.com/macros/s/AKfycbyzZg-KNC4jYIpJlBB_1YpmkRFT
 let D = null, VIEW = 'home', PARAM = null, HIST = [], FORM = null, SETEDIT = null, CONFIRM = null, SHOWSEG = null, CAL = null, LUCKFLIP = false;
 let PENDING = 0, LOADING = false, VISITS = null, TAPS = [], SEARCH = '', MSGN = 10, COUNTED = false, REVEAL = true, STORY = null;
 let MYNAME = '', ME = false;
-try { MYNAME = localStorage.getItem('gx_name') || ''; ME = localStorage.getItem('gx_me') === '1'; } catch (e) {}
+let KEY = '';
+try { MYNAME = localStorage.getItem('gx_name') || ''; KEY = localStorage.getItem('gx_key') || ''; ME = !!KEY; localStorage.removeItem('gx_me'); } catch (e) {}
 const ICON = {
   home: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round'><path d='M3.5 10.5 12 3.5l8.5 7V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z'/></svg>",
   shows: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round'><path d='M3.5 6.5h17v3.2a2.3 2.3 0 0 0 0 4.6v3.2h-17v-3.2a2.3 2.3 0 0 0 0-4.6z'/><path d='M14.5 6.5v11' stroke-dasharray='2 2.2'/></svg>",
@@ -546,9 +547,21 @@ function logVisit() {
   try { id = localStorage.getItem('gx_dev') || ''; if (!id) { id = Math.random().toString(36).slice(2, 8); localStorage.setItem('gx_dev', id); first = true; } } catch (e) { id = 'x' + Math.random().toString(36).slice(2, 7); }
   apiPost('logVisit', [id, first, SRC]).catch(function () {});
 }
-function loadVisits() {
+function setAdmin(key) {
+  KEY = key || ''; ME = !!KEY; VISITS = null;
+  try { if (KEY) localStorage.setItem('gx_key', KEY); else localStorage.removeItem('gx_key'); } catch (e) {}
+}
+// 서버가 비밀번호를 확인해줘야 방문 기록이 보임
+function loadVisits(fresh) {
   if (!ME) return;
-  apiGet('visits').then(function (v) { VISITS = v; if (VIEW === 'home' && !editing()) render(); }).catch(function () { VISITS = {error: true}; if (VIEW === 'home' && !editing()) render(); });
+  apiGet('visits', '&key=' + encodeURIComponent(KEY)).then(function (v) {
+    VISITS = v;
+    if (fresh) toast('👀 관리자 모드 ON · 이 기기는 방문 집계에서 빠져');
+    if (VIEW === 'home' && !editing()) render();
+  }).catch(function (e) {
+    if (/wrong_key/.test(e.message)) { setAdmin(''); toast('비밀번호가 틀렸어'); render(); return; }
+    VISITS = {error: true}; if (VIEW === 'home' && !editing()) render();
+  });
 }
 
 // ---- 데이터 ----
@@ -1350,12 +1363,12 @@ document.getElementById('logo').addEventListener('click', function () {
   TAPS.push(now);
   if (TAPS.length < 5) return;
   TAPS = [];
-  ME = !ME;
-  try { if (ME) localStorage.setItem('gx_me', '1'); else localStorage.removeItem('gx_me'); } catch (e) {}
-  toast(ME ? '👀 관리자 모드 ON · 이 폰은 방문 집계에서 빠져' : '관리자 모드 OFF');
-  VISITS = null;
+  if (ME) { setAdmin(''); toast('관리자 모드 OFF'); tab('home'); return; }
+  const k = (window.prompt('관리자 비밀번호') || '').trim();
+  if (!k) return;
+  setAdmin(k);
   tab('home');
-  loadVisits();
+  loadVisits(true);
 });
 
 render();

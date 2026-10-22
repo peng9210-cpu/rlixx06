@@ -18,6 +18,12 @@ const API = {
   saveSet: saveSet, saveReview: saveReview, deleteReview: deleteReview
 };
 
+// 관리자 비밀번호는 코드가 아니라 Apps Script의 '스크립트 속성' ADMIN_KEY에 저장 (코드는 공개 저장소에 있으니까)
+function adminOk_(k) {
+  const real = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
+  return !!real && String(k || '') === String(real);
+}
+
 function json_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -29,6 +35,7 @@ function doGet(e) {
     try { return json_({ok: true, result: getData()}); } catch (err) { return json_({ok: false, error: err.message}); }
   }
   if (p.api === 'visits') {
+    if (!adminOk_(p.key)) return json_({ok: false, error: 'wrong_key'});
     try { return json_({ok: true, result: getVisits()}); } catch (err) { return json_({ok: false, error: err.message}); }
   }
   // 예전 주소로 들어온 사람은 새 사이트로 안내
