@@ -329,14 +329,14 @@ function linkName(u) {
   return '';
 }
 function listenTxt(u) { const n = linkName(u); return n ? n + '에서 듣기' : '들으러 가기'; }
-// 발매 후 30일까지 홈에 '뉴발매' 한 줄
+// 발매 후 60일까지 홈에 '뉴발매' 한 줄 (제일 최신 곡 하나만)
 function newRelSection() {
   const t = today();
   return D.songs.filter(function (g) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(g['발매일'] || '')) return false;
     const n = diff(g['발매일'], t);
-    return n >= 0 && n <= 30;
-  }).sort(function (a, b) { return a['발매일'] < b['발매일'] ? 1 : -1; }).map(function (g) {
+    return n >= 0 && n <= 60;
+  }).sort(function (a, b) { return a['발매일'] < b['발매일'] ? 1 : -1; }).slice(0, 1).map(function (g) {
     const inner = `<span class='nb'>NEW</span><span class='nt'>뉴발매 · ${esc(g['곡명'])}</span>`;
     if (!g['링크']) return `<div class='nrow' data-go='song' data-id='${esc(g['곡명'])}'>${inner}<span class='chev'>›</span></div>`;
     return `<a class='nrow' href='${esc(g['링크'])}' target='_blank' rel='noopener'>${inner}<span class='ni' aria-label='${esc(listenTxt(g['링크']))}'><svg viewBox='0 0 24 24' fill='currentColor'><path d='M7 4.5v15l12-7.5z'/></svg></span></a>`;
