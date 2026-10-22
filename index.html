@@ -180,6 +180,12 @@ label{font-size:13px;color:var(--sub);font-weight:600}
 .lsg small{display:block;font-size:11px;color:var(--sub);font-weight:700}
 .lsg b{display:block;font-size:14px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .msg{white-space:pre-wrap;word-break:break-all;font-size:14px;margin-top:3px;line-height:1.5}
+.newrel{position:relative;overflow:hidden;background:var(--yel);border-radius:26px;padding:18px 18px 16px;margin-top:12px;cursor:pointer}
+.newrel:after{content:'🧄';position:absolute;right:-8px;bottom:-26px;font-size:96px;opacity:.16;pointer-events:none;transform:rotate(-12deg)}
+.newrel .kick{font-family:var(--serif);font-style:italic;font-size:15px;color:#6B5000;display:flex;gap:8px;align-items:center}
+.newrel .nt{font-size:26px;font-weight:900;letter-spacing:-.8px;margin-top:6px;line-height:1.2}
+.newrel .nm{font-size:13px;color:#5E4A00;margin-top:4px;font-weight:600}
+.newrel .actions{margin-top:12px;position:relative;z-index:1}
 .storybtn{display:flex;align-items:center;gap:14px;background:var(--yel);border-radius:22px;padding:14px 16px;margin-top:12px;cursor:pointer;border:none;width:100%;text-align:left}
 .storybtn .ic{flex:none;width:44px;height:44px;border-radius:14px;background:var(--ink);color:var(--yel);display:flex;align-items:center;justify-content:center;font-size:22px}
 .storybtn b{display:block;font-size:15px}
@@ -310,6 +316,39 @@ function copyText(t) {
   const ok = function () { toast('복사했어! 유튜브 설명란에 붙여넣어 📋'); };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () { window.prompt('복사해서 써줘', t); });
   else window.prompt('복사해서 써줘', t);
+}
+function linkName(u) {
+  u = String(u || '');
+  if (/youtu/.test(u)) return '유튜브';
+  if (/melon/.test(u)) return '멜론';
+  if (/spotify/.test(u)) return '스포티파이';
+  if (/genie/.test(u)) return '지니';
+  if (/bugs/.test(u)) return '벅스';
+  if (/flo\b|music-flo/.test(u)) return '플로';
+  if (/apple/.test(u)) return '애플뮤직';
+  if (/vibe/.test(u)) return '바이브';
+  return '';
+}
+function listenTxt(u) { const n = linkName(u); return n ? n + '에서 듣기' : '들으러 가기'; }
+// 발매 14일 전 ~ 발매 30일 후인 곡
+function newReleases() {
+  const t = today();
+  return D.songs.filter(function (g) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(g['발매일'] || '')) return false;
+    const n = diff(g['발매일'], t);
+    return n >= -14 && n <= 30;
+  }).sort(function (a, b) { return a['발매일'] < b['발매일'] ? 1 : -1; });
+}
+function newRelSection() {
+  const t = today();
+  return newReleases().map(function (g) {
+    const n = diff(g['발매일'], t), st = D.stat[g['곡명']] || {plays: []};
+    const lives = st.plays.filter(function (p) { return p.date <= t; });
+    const first = lives[lives.length - 1];
+    const badge = n < 0 ? `<span class='pill' style='background:var(--ink);color:var(--yel)'>D${n}</span>` : `<span class='pill' style='background:var(--ink);color:var(--yel)'>${n === 0 ? 'OUT NOW' : 'D+' + n}</span>`;
+    const live = first ? `🎤 라이브 ${lives.length}번 · 첫 라이브 ${short(first.date)} ${esc(showName(first.k))}` : '🎤 아직 라이브 전';
+    return `<div class='newrel' data-go='song' data-id='${esc(g['곡명'])}'><div class='kick'>${n < 0 ? 'Coming soon' : 'New release'} ${badge}</div><div class='nt'>${esc(g['곡명'])}</div><div class='nm'>${nice(g['발매일'])} ${n < 0 ? '발매 예정' : '발매'}${g['앨범'] ? ' · 💿 ' + esc(g['앨범']) : ''}</div><div class='nm' style='margin-top:2px'>${live}</div>${g['링크'] ? `<div class='actions'><a class='btn2 on' href='${esc(g['링크'])}' target='_blank' rel='noopener'>🎧 ${listenTxt(g['링크'])}</a></div>` : ''}</div>`;
+  }).join('');
 }
 function msgKey(m) { return m['시간'] + '|' + m['이름'] + '|' + m['내용']; }
 
@@ -561,7 +600,7 @@ function build() {
   D.shows.forEach(function (s) { D.showMap[s.k] = s; });
   D.sets.forEach(function (r) { const k = key(r['날짜'], r['회차']); (D.setBy[k] = D.setBy[k] || []).push(r); });
   Object.keys(D.setBy).forEach(function (k) { D.setBy[k].sort(function (a, b) { return Number(a['순서']) - Number(b['순서']); }); });
-  D.songs.forEach(function (s) { D.stat[s['곡명']] = {name: s['곡명'], album: s['앨범'], plays: [], known: true}; });
+  D.songs.forEach(function (s) { D.stat[s['곡명']] = {name: s['곡명'], album: s['앨범'], rel: s['발매일'] || '', link: s['링크'] || '', plays: [], known: true}; });
   Object.keys(D.setBy).forEach(function (k) {
     D.setBy[k].forEach(function (r) {
       const n = r['곡명'];
@@ -948,6 +987,7 @@ function vHome() {
   const liveSongs = Object.keys(D.stat).filter(function (n) { return D.stat[n].plays.some(function (p) { return p.date <= t; }); }).length;
   const total = Object.keys(D.setBy).filter(function (k) { return k.split('|')[0] <= t; }).reduce(function (a, k) { return a + D.setBy[k].length; }, 0);
   h += `<div class='stats'><div class='stat'><b class='cnum' data-n='${past.length}'>${past.length}</b><span>지난 공연</span></div><div class='stat'><b class='cnum' data-n='${liveSongs}'>${liveSongs}</b><span>라이브 된 곡</span></div><div class='stat'><b class='cnum' data-n='${total}'>${total}</b><span>셋리 누적</span></div></div>`;
+  h += newRelSection();
   h += bdaySection();
   h += bandSection();
   if (past.length) h += sec('최근 공연', `<button class='more' data-act='allPast'>전체 ${past.length} ›</button>`, 'Recent') + `<div class='card' style='padding:4px 16px'>` + past.slice(0, 3).map(function (s) { return showRow(s, false); }).join('') + `</div>`;
@@ -1036,7 +1076,7 @@ function vSong() {
   if (!s) return `<div class='empty'>곡을 찾을 수 없어</div>`;
   const t = today();
   const past = s.plays.filter(function (p) { return p.date <= t; });
-  let h = `<div class='hero' style='margin-top:4px'>${sparkles()}<div class='kick'>Song${isRare(s) ? `<span class='pill yel'>레어곡</span>` : ''}</div><div class='title' style='font-size:23px;padding-right:0'>${esc(s.name)}</div>${s.album ? `<div class='meta'>💿 ${esc(s.album)}</div>` : ''}<div class='actions'>${s.known ? `<button class='btn2 glass' data-act='editSong'>✏️ 수정</button><button class='btn2 glass danger' data-act='delSong'>${CONFIRM === 'delSong' ? '한 번 더 누르면 삭제' : '🗑 삭제'}</button>` : `<button class='btn2 yel' data-act='addUnknown'>+ 곡 목록에 추가</button>`}</div></div>`;
+  let h = `<div class='hero' style='margin-top:4px'>${sparkles()}<div class='kick'>Song${isRare(s) ? `<span class='pill yel'>레어곡</span>` : ''}</div><div class='title' style='font-size:23px;padding-right:0'>${esc(s.name)}</div>${s.album ? `<div class='meta'>💿 ${esc(s.album)}</div>` : ''}${/^\d{4}-\d{2}-\d{2}$/.test(s.rel) ? `<div class='meta' style='margin-top:2px'>📅 ${nice(s.rel)} 발매</div>` : ''}<div class='actions'>${s.link ? `<a class='btn2 yel' href='${esc(s.link)}' target='_blank' rel='noopener'>🎧 ${listenTxt(s.link)}</a>` : ''}${s.known ? `<button class='btn2 glass' data-act='editSong'>✏️ 수정</button><button class='btn2 glass danger' data-act='delSong'>${CONFIRM === 'delSong' ? '한 번 더 누르면 삭제' : '🗑 삭제'}</button>` : `<button class='btn2 yel' data-act='addUnknown'>+ 곡 목록에 추가</button>`}</div></div>`;
   h += `<div class='stats'><div class='stat'><b>${past.length}</b><span>라이브 횟수</span></div><div class='stat'><b style='font-size:19px;line-height:1.75'>${past.length ? short(past[past.length - 1].date) : '-'}</b><span>첫 라이브</span></div><div class='stat'><b>${s.rest >= 0 ? s.rest : '-'}</b><span>공연째 쉬는 중</span></div></div>`;
   h += sec('라이브 기록', '', 'History');
   if (!s.plays.length) return h + `<div class='card empty'>아직 라이브 기록이 없어</div>`;
@@ -1109,7 +1149,7 @@ function vForm() {
     return sec(FORM.orig ? '공연 수정' : '공연 추가', '', 'Show') + `<div class='card'><label>날짜 *</label><input id='f_date' type='date' value='${esc(s['날짜'] || '')}'><label>공연명 *</label><input id='f_name' value='${esc(s['공연명'] || '')}'><label>장소</label><input id='f_venue' value='${esc(s['장소'] || '')}'><label>시간</label><input id='f_time' type='time' value='${esc(s['시간'] || '')}'><label>회차 (낮/밤 공연 있을 때만)</label><input id='f_round' value='${esc(s['회차'] || '')}' placeholder='예: 낮, 밤'><label>예매 링크</label><input id='f_link' value='${esc(s['예매 링크'] || '')}'><label>예매 오픈일</label><input id='f_open' type='date' value='${esc(s['예매 오픈일'] || '')}'><label>비고</label><input id='f_note' value='${esc(s['비고'] || '')}'><label>공연 풀영상 (유튜브 링크)</label><input id='f_video' value='${esc(s['영상'] || '')}' placeholder='https://youtu.be/…' inputmode='url'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveShow'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
   }
   const g = FORM.orig ? (D.songs.filter(function (x) { return x['곡명'] === FORM.orig; })[0] || {}) : {'곡명': FORM.name || ''};
-  return sec(FORM.orig ? '곡 수정' : '곡 추가', '', 'Song') + `<div class='card'><label>곡명 *</label><input id='s_name' value='${esc(g['곡명'] || '')}'><label>앨범</label><input id='s_album' value='${esc(g['앨범'] || '')}'><label>발매일</label><input id='s_rel' type='date' value='${esc(g['발매일'] || '')}'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveSong'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
+  return sec(FORM.orig ? '곡 수정' : '곡 추가', '', 'Song') + `<div class='card'><label>곡명 *</label><input id='s_name' value='${esc(g['곡명'] || '')}'><label>앨범</label><input id='s_album' value='${esc(g['앨범'] || '')}'><label>발매일</label><input id='s_rel' type='date' value='${esc(g['발매일'] || '')}'><label>듣기 링크 (음원·뮤비)</label><input id='s_link' value='${esc(g['링크'] || '')}' placeholder='https://…' inputmode='url'><div class='actions' style='margin-top:4px'><button class='btn' data-act='saveSong'>저장</button><button class='btn gray' data-act='back'>취소</button></div></div>`;
 }
 
 function act(a, id) {
@@ -1206,7 +1246,7 @@ function act(a, id) {
     return;
   }
   if (a === 'saveSong') {
-    const s = {'곡명': val('s_name'), '앨범': val('s_album'), '발매일': val('s_rel')};
+    const s = {'곡명': val('s_name'), '앨범': val('s_album'), '발매일': val('s_rel'), '링크': val('s_link')};
     if (!s['곡명']) { toast('곡명은 꼭 적어줘'); return; }
     const orig = FORM.orig;
     if (s['곡명'] !== orig && D.songs.some(function (x) { return x['곡명'] === s['곡명']; })) { toast('이미 있는 곡이야'); return; }
