@@ -440,8 +440,8 @@ function bdays() {
 function bdaySection() {
   const all = bdays();
   if (!all.length) return '';
-  const near = all.filter(function (x) { return x.n <= 30; });
-  return (near.length ? near : all.slice(0, 1)).map(function (x) {
+  // 생일 2주 전부터만 표시
+  return all.filter(function (x) { return x.n <= 14; }).map(function (x) {
     const m = x.m;
     const msg = x.n === 0 ? `오늘은 ${m.name} 생일! 축하해요 ${m.h}` : x.n < 0 ? `${m.name} 생일 · 늦었지만 축하해요 ${m.h}` : `${m.name} 생일 · ${x.d.getMonth() + 1}월 ${x.d.getDate()}일`;
     return `<div class='bd${x.n === 0 ? ' today' : ''}' style='--c:${m.color};--b:${m.bg}'><span class='bdi'>🎂</span><span class='bdt'>${msg}</span><span class='bdd'>${ddText(x.n)}</span></div>`;
