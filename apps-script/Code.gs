@@ -1,6 +1,6 @@
-// 갈릭스 라이브 아카이브 · 데이터 서버
-// 화면은 GitHub Pages(SITE_URL)에서 뜨고, 이 스크립트는 구글 시트 데이터만 주고받아.
-// 배포할 때는 "배포 관리 → 기존 배포 수정(연필) → 새 버전"으로 해야 주소가 안 바뀌어.
+/* 갈릭스 라이브 아카이브 · 데이터 서버 */
+/* 화면은 GitHub Pages(SITE_URL)에서 뜨고, 이 스크립트는 구글 시트 데이터만 주고받아. */
+/* 배포할 때는 "배포 관리 → 기존 배포 수정(연필) → 새 버전"으로 해야 주소가 안 바뀌어. */
 
 const SITE_URL = 'https://peng9210-cpu.github.io/rlixx06/';
 const IDS = {
@@ -11,14 +11,14 @@ const IDS = {
   visits: '1EGtSMS7iU4y4ayTCB0uy1xDMs2cXihOfNsKjrA3uCxA',
   messages: '1R2jb3gxSTo_SbRHIC0RMC7Kso8om-CttAJ0INTIsGms'
 };
-// 사이트에서 부를 수 있는 함수 목록
+/* 사이트에서 부를 수 있는 함수 목록 */
 const API = {
   logVisit: logVisit, logAct: logAct, addMessage: addMessage, deleteMessage: deleteMessage,
   saveShow: saveShow, deleteShow: deleteShow, saveSong: saveSong, deleteSong: deleteSong,
   saveSet: saveSet, saveReview: saveReview, deleteReview: deleteReview
 };
 
-// 관리자 비밀번호는 코드가 아니라 Apps Script의 '스크립트 속성' ADMIN_KEY에 저장 (코드는 공개 저장소에 있으니까)
+/* 관리자 비밀번호는 코드가 아니라 Apps Script의 '스크립트 속성' ADMIN_KEY에 저장 (코드는 공개 저장소에 있으니까) */
 function adminOk_(k) {
   const real = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
   return !!real && String(k || '') === String(real);
@@ -38,7 +38,7 @@ function doGet(e) {
     if (!adminOk_(p.key)) return json_({ok: false, error: 'wrong_key'});
     try { return json_({ok: true, result: getVisits()}); } catch (err) { return json_({ok: false, error: err.message}); }
   }
-  // 예전 주소로 들어온 사람은 새 사이트로 안내
+  /* 예전 주소로 들어온 사람은 새 사이트로 안내 */
   const html = "<!doctype html><meta name='viewport' content='width=device-width,initial-scale=1'>" +
     "<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#F6F1E9;font-family:system-ui,sans-serif;color:#211C17;text-align:center}" +
     "a{display:inline-block;margin-top:18px;background:#211C17;color:#FFF8EC;text-decoration:none;padding:14px 26px;border-radius:99px;font-weight:700}</style>" +
@@ -69,7 +69,7 @@ function logVisit(dev, first, src) {
   return true;
 }
 
-// 방문자가 뭘 봤는지는 방문기록 파일의 '활동' 탭에 따로 쌓음 (없으면 자동으로 만들어)
+/* 방문자가 뭘 봤는지는 방문기록 파일의 '활동' 탭에 따로 쌓음 (없으면 자동으로 만들어) */
 function actSheet_(create) {
   const ss = SpreadsheetApp.openById(IDS.visits);
   let sh = ss.getSheetByName('활동');
@@ -90,7 +90,7 @@ function logAct(dev, list) {
   return true;
 }
 
-// 최근 30일, 종류별로 '본 사람 수' 기준 상위 목록
+/* 최근 30일, 종류별로 '본 사람 수' 기준 상위 목록 */
 function actStats_(since) {
   const sh = actSheet_(false);
   if (!sh) return {};
@@ -123,7 +123,7 @@ function getVisits() {
     all[r[1]] = true;
     const day = String(r[0]).slice(0, 10);
     if (day === today) td[r[1]] = true;
-    // 유입 경로는 기록을 시작한 뒤(4번째 칸이 있는 줄)만, 최근 30일
+    /* 유입 경로는 기록을 시작한 뒤(4번째 칸이 있는 줄)만, 최근 30일 */
     const s = String(r[3] || '').trim();
     if (s && day >= since) {
       src[s] = (src[s] || 0) + 1;
