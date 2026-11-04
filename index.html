@@ -234,8 +234,8 @@ textarea:focus{outline:none;border-color:var(--ink);background:#fff}
   <div class="hr">
     <span id="sync"></span>
     <span class="snsl">공계<br>바로가기</span>
-    <a class="sns" data-app="ig" href="https://www.instagram.com/garlixx/" target="_blank" rel="noopener" aria-label="갈릭스 공식 인스타그램"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-    <a class="sns" data-app="yt" href="https://www.youtube.com/@garlixxofficial" target="_blank" rel="noopener" aria-label="갈릭스 공식 유튜브"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/></svg></a>
+    <a class="sns" data-app="ig" data-trk="공계" data-trk-id="인스타그램" href="https://www.instagram.com/garlixx/" target="_blank" rel="noopener" aria-label="갈릭스 공식 인스타그램"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+    <a class="sns" data-app="yt" data-trk="공계" data-trk-id="유튜브" href="https://www.youtube.com/@garlixxofficial" target="_blank" rel="noopener" aria-label="갈릭스 공식 유튜브"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/></svg></a>
   </div>
 </header>
 <main id="app"><div class="center">불러오는 중…</div></main>
@@ -340,7 +340,7 @@ function newRelSection() {
   }).sort(function (a, b) { return a['발매일'] < b['발매일'] ? 1 : -1; }).slice(0, 1).map(function (g) {
     const inner = `<span class='nb'>NEW</span><span class='nt'>뉴발매 · ${esc(g['곡명'])}</span>`;
     if (!g['링크']) return `<div class='nrow' data-go='song' data-id='${esc(g['곡명'])}'>${inner}<span class='chev'>›</span></div>`;
-    return `<a class='nrow' href='${esc(g['링크'])}' target='_blank' rel='noopener'>${inner}<span class='ni' aria-label='${esc(listenTxt(g['링크']))}'><svg viewBox='0 0 24 24' fill='currentColor'><path d='M7 4.5v15l12-7.5z'/></svg></span></a>`;
+    return `<a class='nrow' data-trk='듣기' data-trk-id='${esc(g['곡명'])}' href='${esc(g['링크'])}' target='_blank' rel='noopener'>${inner}<span class='ni' aria-label='${esc(listenTxt(g['링크']))}'><svg viewBox='0 0 24 24' fill='currentColor'><path d='M7 4.5v15l12-7.5z'/></svg></span></a>`;
   }).join('');
 }
 function msgKey(m) { return m['시간'] + '|' + m['이름'] + '|' + m['내용']; }
@@ -528,8 +528,34 @@ const SRC = visitSource();
 try { if (/[?&](utm_|fbclid|from=|igsh)/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
 
 // 봇은 빼고, 화면을 실제로 2초 이상 본 경우만 방문으로 기록
+const BOT = !!navigator.webdriver || /bot|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|lighthouse|preview|scan/i.test(navigator.userAgent);
+let DEV = '', FIRST = false;
+function devId() {
+  if (DEV) return DEV;
+  try { DEV = localStorage.getItem('gx_dev') || ''; if (!DEV) { DEV = Math.random().toString(36).slice(2, 8); localStorage.setItem('gx_dev', DEV); FIRST = true; } } catch (e) { DEV = 'x' + Math.random().toString(36).slice(2, 7); }
+  return DEV;
+}
+// 방문자가 뭘 봤는지 (관리자·봇 제외). 몇 개 모아서 한 번에 보냄
+let ACTQ = [], ACTT = 0;
+function track(type, target) {
+  if (ME || BOT || !type) return;
+  ACTQ.push([type, String(target || '')]);
+  clearTimeout(ACTT);
+  ACTT = setTimeout(flushAct, 4000);
+}
+function flushAct() {
+  clearTimeout(ACTT);
+  if (!ACTQ.length) return;
+  const body = JSON.stringify({fn: 'logAct', args: [devId(), ACTQ.splice(0)]});
+  try { if (navigator.sendBeacon && navigator.sendBeacon(API, new Blob([body], {type: 'text/plain;charset=utf-8'}))) return; } catch (e) {}
+  fetch(API, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: body, keepalive: true}).catch(function () {});
+}
+document.addEventListener('visibilitychange', function () { if (document.hidden) flushAct(); });
+window.addEventListener('pagehide', flushAct);
+function showLabel(k) { const sh = D && D.showMap[k]; return sh ? short(sh['날짜']) + ' ' + sh['공연명'] : String(k || '').split('|')[0]; }
+
 function logVisitLater() {
-  if (ME || navigator.webdriver || /bot|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|lighthouse|preview|scan/i.test(navigator.userAgent)) return;
+  if (ME || BOT) return;
   let seen = 0, last = document.hidden ? 0 : Date.now(), done = false;
   const tick = function () {
     if (done) return;
@@ -543,9 +569,8 @@ function logVisitLater() {
 }
 function logVisit() {
   if (ME) return;
-  let id = '', first = false;
-  try { id = localStorage.getItem('gx_dev') || ''; if (!id) { id = Math.random().toString(36).slice(2, 8); localStorage.setItem('gx_dev', id); first = true; } } catch (e) { id = 'x' + Math.random().toString(36).slice(2, 7); }
-  apiPost('logVisit', [id, first, SRC]).catch(function () {});
+  const id = devId();
+  apiPost('logVisit', [id, FIRST, SRC]).catch(function () {});
 }
 function setAdmin(key) {
   KEY = key || ''; ME = !!KEY; VISITS = null;
@@ -926,6 +951,8 @@ function go(v, p, noPush) {
   VIEW = v; PARAM = (p === undefined ? null : p);
   SETEDIT = null; CONFIRM = null;
   REVEAL = true;
+  if (v === 'show' && PARAM) track('공연', showLabel(PARAM));
+  if (v === 'song' && PARAM) track('곡', PARAM);
   render(); window.scrollTo(0, 0);
 }
 function tab(v) { HIST = []; go(v, null, true); }
@@ -947,8 +974,22 @@ function meCard() {
   let body;
   if (!VISITS) body = `<div class='sm' style='margin-top:6px'>불러오는 중…</div>`;
   else if (VISITS.error) body = `<div class='sm' style='margin-top:6px'>방문 기록을 못 불러왔어</div>`;
-  else body = `<div class='stats' style='margin-top:10px'><div class='stat'><b>${VISITS.todayPeople}</b><span>오늘 들어온 폰</span></div><div class='stat'><b>${VISITS.people}</b><span>지금까지 폰</span></div><div class='stat'><b>${VISITS.total}</b><span>전체 방문</span></div></div>${VISITS.last ? `<div class='sm' style='margin-top:8px'>마지막 방문 ${esc(VISITS.last)}</div>` : ''}${srcHtml(VISITS)}`;
+  else body = `<div class='stats' style='margin-top:10px'><div class='stat'><b>${VISITS.todayPeople}</b><span>오늘 들어온 폰</span></div><div class='stat'><b>${VISITS.people}</b><span>지금까지 폰</span></div><div class='stat'><b>${VISITS.total}</b><span>전체 방문</span></div></div>${VISITS.last ? `<div class='sm' style='margin-top:8px'>마지막 방문 ${esc(VISITS.last)}</div>` : ''}${srcHtml(VISITS)}${actHtml(VISITS)}`;
   return `<div class='card me'><div class='row'><b style='font-size:14px'>👀 방문 기록 <span class='sub' style='font-weight:500'>나만 보여</span></b><button class='more' data-act='refreshVisits'>새로고침</button></div>${body}</div>`;
+}
+function actHtml(v) {
+  const a = v.acts || {};
+  const block = function (type, title) {
+    const t = a[type];
+    if (!t || !t.top.length) return '';
+    return `<div style='margin-top:10px'><div class='sm' style='margin:0 0 4px;font-weight:700'>${title}</div>` + t.top.slice(0, 3).map(function (x, i) {
+      return `<div class='row' style='font-size:13px;padding:3px 0'><span style='min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'><b style='color:var(--mus);margin-right:6px'>${i + 1}</b>${esc(x[0])}</span><span style='flex:none'><b>${x[1]}</b><span class='sm' style='margin-left:2px'>명</span></span></div>`;
+    }).join('') + `</div>`;
+  };
+  const chips = [['영상', '▶ 영상'], ['듣기', '🎧 듣기'], ['인스스카드', '📸 인스스 카드'], ['공계', '🔗 공계']].filter(function (c) { return a[c[0]]; })
+    .map(function (c) { return `<span class='mini' style='background:rgba(255,255,255,.75)'>${c[1]} ${a[c[0]].people}명</span>`; }).join('');
+  const body = block('공연', '🎫 많이 본 공연') + block('곡', '🎵 많이 본 곡') + (chips ? `<div style='margin-top:8px'>${chips}</div>` : '');
+  return `<div style='margin-top:16px'><div class='row'><b style='font-size:13px'>👀 뭘 봤을까</b><span class='sm' style='margin:0'>최근 30일 · 본 사람 수</span></div>${body || `<div class='sm' style='margin-top:6px'>지금부터 쌓여</div>`}</div>`;
 }
 function srcHtml(v) {
   const src = v.src || {}, td = v.srcToday || {};
@@ -1039,7 +1080,7 @@ function vShow() {
     h += `<div class='actions'><button class='btn' data-act='saveSet'>셋리 저장</button><button class='btn gray' data-act='cancelSet'>취소</button></div></div>`;
   } else {
     const vid = ytId(s['영상']);
-    if (vid) h += sec('공연 풀영상', `<a class='btn2' href='https://youtu.be/${vid}' target='_blank' rel='noopener'>유튜브에서 보기 ↗</a>`, 'Full live') + `<div class='vid' id='vidbox' style='margin-top:0'><iframe id='yt' src='https://www.youtube-nocookie.com/embed/${vid}?rel=0&playsinline=1' title='공연 영상' allow='autoplay; encrypted-media; picture-in-picture; fullscreen' loading='lazy'></iframe></div>`;
+    if (vid) h += sec('공연 풀영상', `<a class='btn2' data-trk='영상' data-trk-id='${esc(showLabel(k))}' href='https://youtu.be/${vid}' target='_blank' rel='noopener'>유튜브에서 보기 ↗</a>`, 'Full live') + `<div class='vid' id='vidbox' style='margin-top:0'><iframe id='yt' src='https://www.youtube-nocookie.com/embed/${vid}?rel=0&playsinline=1' title='공연 영상' allow='autoplay; encrypted-media; picture-in-picture; fullscreen' loading='lazy'></iframe></div>`;
     else if (s['날짜'] <= t) h += `<button class='vlink' data-act='editShow'><span style='font-size:22px'>🎬</span><span><b>공연 풀영상 연결하기</b>유튜브 링크 붙이면 여기서 바로 볼 수 있어</span></button>`;
     if (set.length) h += `<button class='storybtn' data-act='story'><span class='ic'>📸</span><span><b>인스스 셋리카드 만들기</b><small>공연 사진 위에 셋리 얹어서 저장</small></span></button>`;
     h += sec('셋리스트' + (set.length ? ` <span class='sub' style='font-weight:600'>${set.length}곡</span>` : ''), `<button class='btn2' data-act='editSet'>✏️ ${set.length ? '수정' : '셋리 입력'}</button>`, 'Setlist');
@@ -1081,13 +1122,13 @@ function vSong() {
   if (!s) return `<div class='empty'>곡을 찾을 수 없어</div>`;
   const t = today();
   const past = s.plays.filter(function (p) { return p.date <= t; });
-  let h = `<div class='hero' style='margin-top:4px'>${sparkles()}<div class='kick'>Song${isRare(s) ? `<span class='pill yel'>레어곡</span>` : ''}</div><div class='title' style='font-size:23px;padding-right:0'>${esc(s.name)}</div>${s.album ? `<div class='meta'>💿 ${esc(s.album)}</div>` : ''}${/^\d{4}-\d{2}-\d{2}$/.test(s.rel) ? `<div class='meta' style='margin-top:2px'>📅 ${nice(s.rel)} 발매</div>` : ''}<div class='actions'>${s.link ? `<a class='btn2 yel' href='${esc(s.link)}' target='_blank' rel='noopener'>🎧 ${listenTxt(s.link)}</a>` : ''}${s.known ? `<button class='btn2 glass' data-act='editSong'>✏️ 수정</button><button class='btn2 glass danger' data-act='delSong'>${CONFIRM === 'delSong' ? '한 번 더 누르면 삭제' : '🗑 삭제'}</button>` : `<button class='btn2 yel' data-act='addUnknown'>+ 곡 목록에 추가</button>`}</div></div>`;
+  let h = `<div class='hero' style='margin-top:4px'>${sparkles()}<div class='kick'>Song${isRare(s) ? `<span class='pill yel'>레어곡</span>` : ''}</div><div class='title' style='font-size:23px;padding-right:0'>${esc(s.name)}</div>${s.album ? `<div class='meta'>💿 ${esc(s.album)}</div>` : ''}${/^\d{4}-\d{2}-\d{2}$/.test(s.rel) ? `<div class='meta' style='margin-top:2px'>📅 ${nice(s.rel)} 발매</div>` : ''}<div class='actions'>${s.link ? `<a class='btn2 yel' data-trk='듣기' data-trk-id='${esc(s.name)}' href='${esc(s.link)}' target='_blank' rel='noopener'>🎧 ${listenTxt(s.link)}</a>` : ''}${s.known ? `<button class='btn2 glass' data-act='editSong'>✏️ 수정</button><button class='btn2 glass danger' data-act='delSong'>${CONFIRM === 'delSong' ? '한 번 더 누르면 삭제' : '🗑 삭제'}</button>` : `<button class='btn2 yel' data-act='addUnknown'>+ 곡 목록에 추가</button>`}</div></div>`;
   h += `<div class='stats'><div class='stat'><b>${past.length}</b><span>라이브 횟수</span></div><div class='stat'><b style='font-size:19px;line-height:1.75'>${past.length ? short(past[past.length - 1].date) : '-'}</b><span>첫 라이브</span></div><div class='stat'><b>${s.rest >= 0 ? s.rest : '-'}</b><span>공연째 쉬는 중</span></div></div>`;
   h += sec('라이브 기록', '', 'History');
   if (!s.plays.length) return h + `<div class='card empty'>아직 라이브 기록이 없어</div>`;
   return h + `<div class='card' style='padding:4px 16px'>` + s.plays.map(function (p) {
     const venue = (D.showMap[p.k] || {})['장소'] || '';
-    return `<div class='srow tap' data-go='show' data-id='${esc(p.k)}'>${dblk(p.date, true)}<div class='sinfo'><div class='st'>${esc(showName(p.k))}</div><div class='sm'>${venue ? esc(venue) + ' · ' : ''}${esc(p.order)}번째${p.encore ? ' · 앵콜' : ''}${gapTxt(p) ? ' · ' + gapTxt(p) : ''}</div>${p.memo ? `<div class='sm' style='color:var(--ink)'>${esc(p.memo)}</div>` : ''}</div>${ytId((D.showMap[p.k] || {})['영상']) && tsec(p.time) >= 0 ? `<a class='seek' href='https://youtu.be/${ytId(D.showMap[p.k]['영상'])}?t=${tsec(p.time)}' target='_blank' rel='noopener'>▶ 보기</a>` : `<span class='chev'>›</span>`}</div>`;
+    return `<div class='srow tap' data-go='show' data-id='${esc(p.k)}'>${dblk(p.date, true)}<div class='sinfo'><div class='st'>${esc(showName(p.k))}</div><div class='sm'>${venue ? esc(venue) + ' · ' : ''}${esc(p.order)}번째${p.encore ? ' · 앵콜' : ''}${gapTxt(p) ? ' · ' + gapTxt(p) : ''}</div>${p.memo ? `<div class='sm' style='color:var(--ink)'>${esc(p.memo)}</div>` : ''}</div>${ytId((D.showMap[p.k] || {})['영상']) && tsec(p.time) >= 0 ? `<a class='seek' data-trk='영상' data-trk-id='${esc(showLabel(p.k))}' href='https://youtu.be/${ytId(D.showMap[p.k]['영상'])}?t=${tsec(p.time)}' target='_blank' rel='noopener'>▶ 보기</a>` : `<span class='chev'>›</span>`}</div>`;
   }).join('') + `</div>`;
 }
 function vStats() {
@@ -1172,8 +1213,9 @@ function act(a, id) {
     burst(id);
     return;
   }
-  if (a === 'story') { openStory(PARAM); return; }
+  if (a === 'story') { track('인스스카드', showLabel(PARAM)); openStory(PARAM); return; }
   if (a === 'seek') {
+    track('영상', showLabel(PARAM));
     const f = document.getElementById('yt'), v = ytId((D.showMap[PARAM] || {})['영상']);
     if (!f || !v) return;
     f.src = 'https://www.youtube-nocookie.com/embed/' + v + '?rel=0&playsinline=1&autoplay=1&start=' + Number(id);
@@ -1325,6 +1367,8 @@ function openApp(a) {
   return true;
 }
 document.addEventListener('click', function (e) {
+  const tr = e.target.closest('[data-trk]');
+  if (tr) { track(tr.dataset.trk, tr.dataset.trkId); flushAct(); }
   const sns = e.target.closest('.sns[data-app]');
   if (sns && openApp(sns)) { e.preventDefault(); return; }
   const t = e.target.closest('[data-tab]');

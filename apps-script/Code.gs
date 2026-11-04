@@ -13,7 +13,7 @@ const IDS = {
 };
 // 사이트에서 부를 수 있는 함수 목록
 const API = {
-  logVisit: logVisit, addMessage: addMessage, deleteMessage: deleteMessage,
+  logVisit: logVisit, logAct: logAct, addMessage: addMessage, deleteMessage: deleteMessage,
   saveShow: saveShow, deleteShow: deleteShow, saveSong: saveSong, deleteSong: deleteSong,
   saveSet: saveSet, saveReview: saveReview, deleteReview: deleteReview
 };
@@ -69,6 +69,50 @@ function logVisit(dev, first, src) {
   return true;
 }
 
+// 방문자가 뭘 봤는지는 방문기록 파일의 '활동' 탭에 따로 쌓음 (없으면 자동으로 만들어)
+function actSheet_(create) {
+  const ss = SpreadsheetApp.openById(IDS.visits);
+  let sh = ss.getSheetByName('활동');
+  if (!sh && create) { sh = ss.insertSheet('활동'); sh.appendRow(['시간', '기기', '종류', '대상']); }
+  return sh;
+}
+
+function logAct(dev, list) {
+  try {
+    list = (list || []).slice(0, 30).filter(function (a) { return a && a[0]; });
+    if (!list.length) return true;
+    const sh = actSheet_(true);
+    const now = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
+    list.forEach(function (a) {
+      sh.appendRow(["'" + now, String(dev || '').slice(0, 12), String(a[0]).slice(0, 10), "'" + String(a[1] || '').slice(0, 60)]);
+    });
+  } catch (err) {}
+  return true;
+}
+
+// 최근 30일, 종류별로 '본 사람 수' 기준 상위 목록
+function actStats_(since) {
+  const sh = actSheet_(false);
+  if (!sh) return {};
+  const rows = sh.getDataRange().getDisplayValues().slice(1);
+  const by = {};
+  rows.forEach(function (r) {
+    if (String(r[0]).slice(0, 10) < since || !r[2]) return;
+    const t = by[r[2]] = by[r[2]] || {who: {}, items: {}};
+    t.who[r[1]] = true;
+    const it = t.items[r[3]] = t.items[r[3]] || {};
+    it[r[1]] = true;
+  });
+  const out = {};
+  Object.keys(by).forEach(function (k) {
+    const items = by[k].items;
+    out[k] = {people: Object.keys(by[k].who).length,
+      top: Object.keys(items).map(function (n) { return [n, Object.keys(items[n]).length]; })
+        .sort(function (a, b) { return b[1] - a[1]; }).slice(0, 5)};
+  });
+  return out;
+}
+
 function getVisits() {
   const sh = SpreadsheetApp.openById(IDS.visits).getSheets()[0];
   const rows = sh.getDataRange().getDisplayValues().slice(1).filter(function (r) { return r[1]; });
@@ -88,7 +132,7 @@ function getVisits() {
   });
   return {total: rows.length, people: Object.keys(all).length,
     todayPeople: Object.keys(td).length, last: rows.length ? rows[rows.length - 1][0] : '',
-    src: src, srcToday: srcToday};
+    src: src, srcToday: srcToday, acts: actStats_(since)};
 }
 
 function open_(key) {
