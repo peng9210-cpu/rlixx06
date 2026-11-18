@@ -225,6 +225,13 @@ textarea:focus{outline:none;border-color:var(--ink);background:#fff}
 .tsrow{display:flex;gap:6px;flex-basis:100%;margin-top:4px}
 .tsrow input{margin:0}
 .tsrow input.t{flex:none;width:96px;text-align:center;font-variant-numeric:tabular-nums}
+#sv{position:fixed;inset:0;z-index:35;background:#14110E;color:#FFF8EC;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));overflow:auto}
+#sv img{max-height:62vh;max-width:100%;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
+#sv .h1{font-size:16px;font-weight:800;margin:14px 0 4px;text-align:center}
+#sv .h2{font-size:12px;color:rgba(255,248,236,.6);text-align:center;line-height:1.55;max-width:340px}
+#sv .warn{background:rgba(255,207,63,.16);color:#FFE07A;border-radius:12px;padding:9px 12px;font-size:12px;line-height:1.5;margin-top:10px;max-width:340px;text-align:center}
+#sv .row2{display:flex;gap:8px;margin-top:14px;width:100%;max-width:340px}
+#sv .row2 .btn2{flex:1;justify-content:center;padding:13px 10px;font-size:14px}
 .sthint{font-size:11px;color:rgba(255,248,236,.45);text-align:center;margin-top:8px}
 </style>
 </head>
@@ -843,7 +850,7 @@ function storyHtml() {
     <div class='strow'><label class='pick'>📷 ${st.img ? '사진 바꾸기' : '공연 사진 고르기'}<input type='file' id='stfile' accept='image/*' hidden></label><div class='seg'>${seg}</div></div>
     ${st.img ? `<div class='sl2'><span>어둡게</span><input type='range' id='stdim' min='0' max='70' value='${Math.round(st.dim * 100)}'></div><div class='sl2'><span>확대</span><input type='range' id='stzoom' min='100' max='300' value='${Math.round(st.zoom * 100)}'></div>` : ''}
     <div class='sl2'><span>카드 위치</span><input type='range' id='stpos' min='-100' max='100' value='${Math.round(st.pos * 100)}'></div>
-    <div class='actions' style='margin-top:12px'><button class='btn' data-act='stSave' style='background:var(--yel);color:var(--ink)'>저장 / 공유하기</button></div>
+    <div class='actions' style='margin-top:12px'><button class='btn' data-act='stSave' style='background:var(--yel);color:var(--ink)'>📥 이미지 저장하기</button></div>
     <div class='sthint'>${st.img ? '미리보기를 손가락으로 끌면 사진 위치가 움직여' : '사진 안 고르면 기본 배경으로 저장돼'}</div>
   </div>`;
 }
@@ -883,13 +890,6 @@ function drawPreview() {
     const c = document.getElementById('stc');
     if (!c) return;
     drawStory(c, STORY);
-    // 공유 버튼을 누르는 순간 바로 공유창이 뜨도록 파일을 미리 만들어 둠
-    STORY.file = null;
-    const gen = ++STORY.gen;
-    clearTimeout(STORY.t);
-    STORY.t = setTimeout(function () {
-      c.toBlob(function (b) { if (STORY && gen === STORY.gen && b) STORY.file = new File([b], storyName() + '.png', {type: 'image/png'}); }, 'image/png');
-    }, 250);
   });
 }
 function storyName() { const s = D.showMap[STORY.k] || {}; return ('garlixx ' + (s['날짜'] || '') + ' ' + (s['공연명'] || 'setlist')).replace(/[\\/:*?"<>|]/g, ''); }
@@ -897,26 +897,42 @@ function closeStory() {
   const o = document.getElementById('story');
   if (o) o.remove();
   document.body.style.overflow = '';
+  closeSave();
   if (STORY && STORY.url) URL.revokeObjectURL(STORY.url);
+  if (STORY && STORY.saveUrl) URL.revokeObjectURL(STORY.saveUrl);
   STORY = null;
 }
+const INAPP = /Instagram|FBAN|FBAV|KAKAOTALK|NAVER\(inapp|Line\/|; wv\)/i.test(navigator.userAgent);
+// 저장은 이미지를 크게 띄워서 '꾹 눌러 저장' 또는 다운로드 버튼으로 (공유창은 갤러리 저장이 없을 때가 많음)
 function saveStory() {
-  const f = STORY && STORY.file;
-  const fallback = function (blob) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = storyName() + '.png';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    toast('저장했어 📸');
-  };
-  if (f && navigator.canShare && navigator.canShare({files: [f]})) {
-    navigator.share({files: [f]}).catch(function (e) { if (e && e.name !== 'AbortError') fallback(f); });
-    return;
-  }
-  if (f) { fallback(f); return; }
+  const c = document.getElementById('stc');
+  if (!c) return;
   toast('카드 만드는 중…');
-  document.getElementById('stc').toBlob(function (b) { if (b) fallback(b); }, 'image/png');
+  c.toBlob(function (b) {
+    if (!b || !STORY) { toast('이미지를 못 만들었어 😢 다시 눌러줘'); return; }
+    if (STORY.saveUrl) URL.revokeObjectURL(STORY.saveUrl);
+    STORY.saveUrl = URL.createObjectURL(b);
+    STORY.saveFile = new File([b], storyName() + '.png', {type: 'image/png'});
+    openSave();
+  }, 'image/png');
+}
+function openSave() {
+  closeSave();
+  const tt = document.getElementById('toast'); if (tt) { tt.style.display = 'none'; clearTimeout(tt._h); }
+  const o = document.createElement('div');
+  o.id = 'sv';
+  const canShare = !!(navigator.canShare && STORY.saveFile && navigator.canShare({files: [STORY.saveFile]}));
+  o.innerHTML = `<img src='${STORY.saveUrl}' alt='셋리카드'><div class='h1'>이미지를 꾹 눌러서 저장해줘</div><div class='h2'>메뉴에서 <b>이미지 저장</b>을 고르면 갤러리에 들어가</div>${INAPP ? `<div class='warn'>앱 안에서 연 화면은 다운로드가 막힐 때가 있어. 꾹 눌러서 저장이 안 되면 오른쪽 위 <b>⋮ 메뉴 → 다른 브라우저로 열기</b>로 열어서 다시 해줘</div>` : ''}<div class='row2'><a class='btn2 white' href='${STORY.saveUrl}' download='${esc(storyName())}.png'>⬇️ 다운로드</a>${canShare ? `<button class='btn2 white' data-act='stShare'>↗ 공유</button>` : ''}<button class='btn2 glass' data-act='stCloseSave'>닫기</button></div>`;
+  document.body.appendChild(o);
+}
+function closeSave() {
+  const o = document.getElementById('sv');
+  if (o) o.remove();
+}
+function shareStory() {
+  const f = STORY && STORY.saveFile;
+  if (!f) return;
+  navigator.share({files: [f]}).catch(function (e) { if (e && e.name !== 'AbortError') toast('공유가 안 돼. 이미지를 꾹 눌러서 저장해줘'); });
 }
 function loadStoryPhoto(file) {
   if (!file || !STORY) return;
@@ -1204,6 +1220,8 @@ function act(a, id) {
     if (a === 'stClose') { closeStory(); return; }
     if (a === 'stStyle') { STORY.style = id; storyUI(); return; }
     if (a === 'stSave') { saveStory(); return; }
+    if (a === 'stShare') { shareStory(); return; }
+    if (a === 'stCloseSave') { closeSave(); return; }
     return;
   }
   if (['delShow', 'delSong', 'delMsg'].indexOf(a) < 0) CONFIRM = null;
@@ -1398,7 +1416,7 @@ document.addEventListener('change', function (e) {
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Enter' && e.target.id === 'mText') { e.preventDefault(); act('addMsg'); }
   if (e.key === 'Enter' && e.target.id === 'q') { e.target.blur(); }
-  if (e.key === 'Escape' && STORY) closeStory();
+  if (e.key === 'Escape' && STORY) { if (document.getElementById('sv')) closeSave(); else closeStory(); }
 });
 // 로고 5번 연타 → 관리자 모드 (방문 기록 보기, 내 방문은 집계 제외)
 document.getElementById('logo').addEventListener('click', function () {
