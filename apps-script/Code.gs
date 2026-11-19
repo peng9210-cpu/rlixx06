@@ -11,9 +11,9 @@ const IDS = {
   visits: '1EGtSMS7iU4y4ayTCB0uy1xDMs2cXihOfNsKjrA3uCxA',
   messages: '1R2jb3gxSTo_SbRHIC0RMC7Kso8om-CttAJ0INTIsGms'
 };
-/* 사이트에서 부를 수 있는 함수 목록 */
-const API = {
-  logVisit: logVisit, logAct: logAct, addMessage: addMessage, deleteMessage: deleteMessage,
+/* 사이트에서 부를 수 있는 함수 목록: 누구나 되는 것 / 관리자 비밀번호가 있어야 되는 것 */
+const PUBLIC_API = {logVisit: logVisit, logAct: logAct, addMessage: addMessage, deleteMessage: deleteMessage};
+const ADMIN_API = {
   saveShow: saveShow, deleteShow: deleteShow, saveSong: saveSong, deleteSong: deleteSong,
   saveSet: saveSet, saveReview: saveReview, deleteReview: deleteReview
 };
@@ -52,9 +52,17 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
-    const fn = API[body.fn];
+    const admin = adminOk_(body.key);
+    let fn = PUBLIC_API[body.fn];
+    if (!fn) {
+      fn = ADMIN_API[body.fn];
+      if (fn && !admin) throw new Error('admin_only');
+    }
     if (!fn) throw new Error('없는 기능이야: ' + body.fn);
-    return json_({ok: true, result: fn.apply(null, body.args || [])});
+    const args = (body.args || []).slice(0, 6);
+    /* 한마디 삭제는 쓴 사람(토큰) 또는 관리자만: 관리자 여부는 서버가 직접 넣음 */
+    if (body.fn === 'deleteMessage') args[4] = admin;
+    return json_({ok: true, result: fn.apply(null, args)});
   } catch (err) {
     return json_({ok: false, error: err.message});
   }
@@ -119,10 +127,17 @@ function getVisits() {
   const today = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd');
   const since = Utilities.formatDate(new Date(Date.now() - 29 * 86400000), 'Asia/Seoul', 'yyyy-MM-dd');
   const all = {}, td = {}, src = {}, srcToday = {};
+  /* 최근 14일 날짜별: [날짜, 들어온 폰 수, 방문 수] */
+  const days = [], byDay = {};
+  for (let i = 13; i >= 0; i--) {
+    const d = Utilities.formatDate(new Date(Date.now() - i * 86400000), 'Asia/Seoul', 'yyyy-MM-dd');
+    days.push(d); byDay[d] = {v: 0, who: {}};
+  }
   rows.forEach(function (r) {
     all[r[1]] = true;
     const day = String(r[0]).slice(0, 10);
     if (day === today) td[r[1]] = true;
+    if (byDay[day]) { byDay[day].v++; byDay[day].who[r[1]] = true; }
     /* 유입 경로는 기록을 시작한 뒤(4번째 칸이 있는 줄)만, 최근 30일 */
     const s = String(r[3] || '').trim();
     if (s && day >= since) {
@@ -132,7 +147,8 @@ function getVisits() {
   });
   return {total: rows.length, people: Object.keys(all).length,
     todayPeople: Object.keys(td).length, last: rows.length ? rows[rows.length - 1][0] : '',
-    src: src, srcToday: srcToday, acts: actStats_(since)};
+    src: src, srcToday: srcToday, acts: actStats_(since),
+    daily: days.map(function (d) { return [d, Object.keys(byDay[d].who).length, byDay[d].v]; })};
 }
 
 function open_(key) {
@@ -205,31 +221,34 @@ function getData() {
     const again = cache.get('data');
     if (again) return JSON.parse(again);
     const d = {shows: readRows_('shows'), sets: readRows_('sets'),
-      songs: readRows_('songs'), reviews: readRows_('reviews'), messages: readRows_('messages')};
+      songs: readRows_('songs'), reviews: readRows_('reviews'),
+      messages: readRows_('messages').map(function (m) { delete m['토큰']; return m; })};
     try { cache.put('data', JSON.stringify(d), 21600); } catch (err) {}
     return d;
   } finally { lock.releaseLock(); }
 }
 
-function addMessage(name, text, time) {
+function addMessage(name, text, time, token) {
   return withLock_(function () {
     text = String(text || '').trim().slice(0, 300);
     if (!text) throw new Error('한마디를 적어줘');
     const tm = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(String(time)) ? String(time)
       : Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
     const t = open_('messages');
-    t.sh.appendRow(rowFrom_(t.head, {'시간': "'" + tm, '이름': String(name || '').slice(0, 20), '내용': text}));
+    t.sh.appendRow(rowFrom_(t.head, {'시간': "'" + tm, '이름': String(name || '').slice(0, 20), '내용': text, '토큰': String(token || '').slice(0, 40)}));
     return true;
   });
 }
 
-function deleteMessage(time, name, text) {
+function deleteMessage(time, name, text, token, admin) {
   return withLock_(function () {
     const t = open_('messages');
     const disp = t.sh.getDataRange().getDisplayValues();
-    const ti = t.head.indexOf('시간'), ni = t.head.indexOf('이름'), ci = t.head.indexOf('내용');
+    const ti = t.head.indexOf('시간'), ni = t.head.indexOf('이름'), ci = t.head.indexOf('내용'), ki = t.head.indexOf('토큰');
     for (let i = disp.length - 1; i >= 1; i--) {
       if (disp[i][ti] === time && disp[i][ni] === (name || '') && disp[i][ci] === text) {
+        const mine = ki >= 0 && token && disp[i][ki] === String(token);
+        if (admin !== true && !mine) throw new Error('내가 쓴 한마디만 지울 수 있어');
         t.sh.deleteRow(i + 1);
         break;
       }
