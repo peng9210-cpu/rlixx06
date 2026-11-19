@@ -8,15 +8,20 @@
 <meta name="theme-color" content="#F6F1E9">
 <meta property="og:title" content="GARLIXX LIVE ARCHIVE">
 <meta property="og:description" content="갈릭스 공연 · 셋리스트 · 곡 기록">
-<meta property="og:image" content="img/seal.png">
-<link rel="icon" href="img/seal.png">
-<link rel="apple-touch-icon" href="img/seal.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://peng9210-cpu.github.io/rlixx06/">
+<meta property="og:image" content="https://peng9210-cpu.github.io/rlixx06/img/seal.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="img/seal-s.png">
+<link rel="apple-touch-icon" href="img/seal-s.png">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&display=swap">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&display=swap"></noscript>
 <style>
 :root{
   --bg:#F6F1E9;--card:#FFFDF9;--ink:#211C17;--ink2:#3A332C;--sub:#8C8378;--line:#ECE4D8;--soft:#F1EADF;
@@ -110,6 +115,7 @@ nav button.on{color:var(--ink);background:var(--yel)}
 .btn{background:var(--ink);color:#FFF8EC;border:none;border-radius:16px;padding:15px;font-size:15px;width:100%;font-weight:700;cursor:pointer}
 .btn.gray{background:#E9E1D4;color:var(--ink)}
 .btn2{background:var(--soft);color:var(--ink);border:none;border-radius:99px;padding:8px 13px;font-size:13px;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;text-decoration:none;cursor:pointer}
+.btn2.sm{padding:7px 9px}
 .btn2.danger{background:var(--redbg);color:var(--red)}
 .btn2.on{background:var(--ink);color:#FFF8EC}
 .btn2.yel{background:var(--yel);color:var(--ink)}
@@ -209,7 +215,7 @@ label{font-size:13px;color:var(--sub);font-weight:600}
 .stctl{max-width:520px;width:100%;margin:0 auto}
 .strow{display:flex;gap:8px;align-items:center;margin-top:8px}
 .strow .seg{background:rgba(255,248,236,.1)}
-.strow .seg button{color:rgba(255,248,236,.6);padding:8px 4px;font-size:13px}
+.strow .seg button{color:rgba(255,248,236,.6);padding:8px 4px;font-size:13px;white-space:nowrap}
 .strow .seg button.on{background:#FFF8EC;color:var(--ink)}
 .sl2{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:12px;color:rgba(255,248,236,.65);font-weight:600}
 .sl2 span{width:52px;flex:none}
@@ -237,7 +243,7 @@ textarea:focus{outline:none;border-color:var(--ink);background:#fff}
 </head>
 <body>
 <header>
-  <div class="logo" id="logo"><img src="img/seal.png" alt=""><span class="lt"><b>GARLIXX</b><small>LIVE ARCHIVE</small></span></div>
+  <div class="logo" id="logo"><img src="img/seal-s.png" alt=""><span class="lt"><b>GARLIXX</b><small>LIVE ARCHIVE</small></span></div>
   <div class="hr">
     <span id="sync"></span>
     <span class="snsl">공계<br>바로가기</span>
@@ -304,7 +310,7 @@ function ytId(u) {
 }
 // '1:04:12' → 3852초
 function tsec(t) {
-  const m = String(t || '').trim().match(/^(?:(\d{1,2}):)?(\d{1,3}):(\d{2})$/);
+  const m = String(t || '').trim().match(/^(?:(\d{1,2})[:.,])?(\d{1,3})[:.,](\d{2})$/);
   return m ? Number(m[1] || 0) * 3600 + Number(m[2]) * 60 + Number(m[3]) : -1;
 }
 function fmtT(n) { const h = Math.floor(n / 3600), m = Math.floor(n % 3600 / 60), x = n % 60; return (h ? h + ':' + p2(m) : m) + ':' + p2(x); }
@@ -350,21 +356,25 @@ function newRelSection() {
     return `<a class='nrow' data-trk='듣기' data-trk-id='${esc(g['곡명'])}' href='${esc(g['링크'])}' target='_blank' rel='noopener'>${inner}<span class='ni' aria-label='${esc(listenTxt(g['링크']))}'><svg viewBox='0 0 24 24' fill='currentColor'><path d='M7 4.5v15l12-7.5z'/></svg></span></a>`;
   }).join('');
 }
-function msgKey(m) { return m['시간'] + '|' + m['이름'] + '|' + m['내용']; }
+function msgKey(m) { return m['시간'] + '|' + (m['이름'] || '') + '|' + m['내용']; }
+function myMsgs() { try { return JSON.parse(localStorage.getItem('gx_my') || '[]'); } catch (e) { return []; } }
+function addMyMsg(k) { try { localStorage.setItem('gx_my', JSON.stringify(myMsgs().concat([k]).slice(-50))); } catch (e) {} }
 
 // ---- 서버 통신 ----
-function apiGet(name, extra) {
-  return fetch(API + '?api=' + name + (extra || '') + '&t=' + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
+function apiJson(r) {
+  return r.text().then(function (t) {
+    let j;
+    try { j = JSON.parse(t); } catch (e) { throw new Error(/<!doctype|<html/i.test(t) ? '서버가 데이터 대신 웹페이지를 줬어 (Apps Script 배포·권한 확인 필요)' : '서버 응답을 못 읽었어'); }
     if (!j.ok) throw new Error(j.error || '서버 오류');
     return j.result;
   });
 }
+function netErr() { throw new Error('서버에 연결이 안 돼 (인터넷 확인)'); }
+function apiGet(name, extra) {
+  return fetch(API + '?api=' + name + (extra || '') + '&t=' + Date.now()).then(apiJson, netErr);
+}
 function apiPost(fn, args) {
-  return fetch(API, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({fn: fn, args: args})})
-    .then(function (r) { return r.json(); }).then(function (j) {
-      if (!j.ok) throw new Error(j.error || '서버 오류');
-      return j.result;
-    });
+  return fetch(API, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({fn: fn, args: args})}).then(apiJson, netErr);
 }
 
 // ---- 멤버 탭 효과 ----
@@ -597,9 +607,9 @@ function loadVisits(fresh) {
 }
 
 // ---- 데이터 ----
-function load(msg, quiet) {
+function load(msg, quiet, fresh) {
   LOADING = true; sync();
-  apiGet('data').then(function (d) {
+  apiGet('data', fresh ? '&fresh=1' : '').then(function (d) {
     LOADING = false; sync();
     if (PENDING > 0) return;
     try { localStorage.setItem('gx_cache', JSON.stringify(d)); } catch (e) {}
@@ -658,12 +668,11 @@ function build() {
   D.nSets = D.order.length;
 }
 function isRare(s) { return D.nSets >= 5 && s.plays.length > 0 && s.plays.length <= 2; }
-function gapTxt(p) { return p.gap ? (p.gap > 1 ? p.gap + '공연 만에' : '') : '첫 라이브'; }
+function gapTxt(p) { return p.gap ? (p.gap > 1 ? p.gap + '공연 만에' : '') : (D.idx[p.k] === 0 ? '' : '첫 라이브'); }
 function showName(k) { const s = D.showMap[k]; return s ? s['공연명'] : k.split('|')[0]; }
 
 // ---- 인스스 셋리카드 ----
 const SEAL = new Image();
-SEAL.src = 'img/seal.png';
 const FONT = "'Pretendard Variable', Pretendard, system-ui, sans-serif";
 const SERIF = "'Fraunces', Georgia, serif";
 const THEMES = {
@@ -847,7 +856,7 @@ function storyHtml() {
   return `<div class='top'><div><em>Story maker</em><b>인스스 셋리카드</b></div><button class='x' data-act='stClose' aria-label='닫기'>✕</button></div>
   <div class='stwrap'><canvas id='stc' width='1080' height='1920'></canvas></div>
   <div class='stctl'>
-    <div class='strow'><label class='pick'>📷 ${st.img ? '사진 바꾸기' : '공연 사진 고르기'}<input type='file' id='stfile' accept='image/*' hidden></label><div class='seg'>${seg}</div></div>
+    <div class='strow'><label class='pick'>📷 ${st.img ? '사진 바꾸기' : '사진 고르기'}<input type='file' id='stfile' accept='image/*' hidden></label><div class='seg'>${seg}</div></div>
     ${st.img ? `<div class='sl2'><span>어둡게</span><input type='range' id='stdim' min='0' max='70' value='${Math.round(st.dim * 100)}'></div><div class='sl2'><span>확대</span><input type='range' id='stzoom' min='100' max='300' value='${Math.round(st.zoom * 100)}'></div>` : ''}
     <div class='sl2'><span>카드 위치</span><input type='range' id='stpos' min='-100' max='100' value='${Math.round(st.pos * 100)}'></div>
     <div class='actions' style='margin-top:12px'><button class='btn' data-act='stSave' style='background:var(--yel);color:var(--ink)'>📥 이미지 저장하기</button></div>
@@ -855,6 +864,7 @@ function storyHtml() {
   </div>`;
 }
 function openStory(k) {
+  if (!SEAL.src) SEAL.src = 'img/seal.png';
   STORY = {k: k, img: null, zoom: 1, ox: 0, oy: 0, dim: 0.22, style: 'white', pos: 0, file: null, raf: 0, gen: 0};
   const o = document.createElement('div');
   o.id = 'story';
@@ -991,7 +1001,7 @@ function meCard() {
   if (!VISITS) body = `<div class='sm' style='margin-top:6px'>불러오는 중…</div>`;
   else if (VISITS.error) body = `<div class='sm' style='margin-top:6px'>방문 기록을 못 불러왔어</div>`;
   else body = `<div class='stats' style='margin-top:10px'><div class='stat'><b>${VISITS.todayPeople}</b><span>오늘 들어온 폰</span></div><div class='stat'><b>${VISITS.people}</b><span>지금까지 폰</span></div><div class='stat'><b>${VISITS.total}</b><span>전체 방문</span></div></div>${VISITS.last ? `<div class='sm' style='margin-top:8px'>마지막 방문 ${esc(VISITS.last)}</div>` : ''}${srcHtml(VISITS)}${actHtml(VISITS)}`;
-  return `<div class='card me'><div class='row'><b style='font-size:14px'>👀 방문 기록 <span class='sub' style='font-weight:500'>나만 보여</span></b><button class='more' data-act='refreshVisits'>새로고침</button></div>${body}</div>`;
+  return `<div class='card me'><div class='row'><b style='font-size:14px'>👀 방문 기록 <span class='sub' style='font-weight:500'>나만 보여</span></b><button class='more' data-act='refreshVisits'>새로고침</button></div>${body}<div class='row' style='margin-top:14px;padding-top:12px;border-top:1px dashed rgba(33,28,23,.15)'><span class='sm' style='margin:0'>구글 시트를 직접 고쳤으면</span><button class='btn2 on' data-act='freshData' style='padding:8px 12px'>↻ 시트 바로 반영</button></div></div>`;
 }
 function actHtml(v) {
   const a = v.acts || {};
@@ -1022,11 +1032,12 @@ function msgSection() {
   let h = sec('한마디' + (all.length ? ` <span class='sub' style='font-weight:600'>${all.length}</span>` : ''), '', 'Guestbook');
   h += `<div class='card'><input id='mText' placeholder='아무 말이나 한마디' maxlength='200' style='margin:0 0 8px'><div class='row'><input id='mName' value='${esc(MYNAME)}' placeholder='이름 (안 써도 돼)'><button class='btn2 on' data-act='addMsg' style='padding:12px 18px'>남기기</button></div></div>`;
   if (list.length) {
+    const mine = myMsgs();
     h += `<div class='card' style='padding:4px 16px'>` + list.map(function (m) {
       const k = msgKey(m), nm = m['이름'] || '익명';
       const tm = String(m['시간'] || '');
       const when = tm.length >= 16 ? Number(tm.slice(5, 7)) + '/' + Number(tm.slice(8, 10)) + ' ' + tm.slice(11, 16) : tm;
-      return `<div class='sl' style='align-items:flex-start'><span class='av'>${esc(nm.slice(0, 1))}</span><div class='sinfo'><div style='display:flex;gap:6px;align-items:baseline'><b style='font-size:14px'>${esc(nm)}</b><span class='sm' style='margin:0'>${esc(when)}</span></div><div class='msg'>${esc(m['내용'])}</div></div><button class='btn2 danger' data-act='delMsg' data-id='${esc(k)}' style='padding:6px 10px'>${CONFIRM === 'delMsg:' + k ? '삭제?' : '🗑'}</button></div>`;
+      return `<div class='sl' style='align-items:flex-start'><span class='av'>${esc(nm.slice(0, 1))}</span><div class='sinfo'><div style='display:flex;gap:6px;align-items:baseline'><b style='font-size:14px'>${esc(nm)}</b><span class='sm' style='margin:0'>${esc(when)}</span></div><div class='msg'>${esc(m['내용'])}</div></div>${ME || mine.indexOf(k) >= 0 ? `<button class='btn2 danger' data-act='delMsg' data-id='${esc(k)}' style='padding:6px 10px'>${CONFIRM === 'delMsg:' + k ? '삭제?' : '🗑'}</button>` : ''}</div>`;
     }).join('') + `</div>`;
     if (all.length > MSGN) h += `<div style='text-align:center'><button class='more' data-act='moreMsg'>더 보기 (${all.length - MSGN})</button></div>`;
   }
@@ -1037,7 +1048,7 @@ function vHome() {
   const up = D.shows.filter(function (s) { return s['날짜'] >= t; }).sort(asc);
   const past = D.shows.filter(function (s) { return s['날짜'] < t; }).sort(desc);
   let h = meCard();
-  const stk = `<div class='stk'><img src='img/seal.png' alt=''></div>`;
+  const stk = `<div class='stk'><img src='img/seal-s.png' alt=''></div>`;
   if (up.length) {
     const s = up[0], dd = diff(t, s['날짜']);
     let extra = '';
@@ -1080,7 +1091,7 @@ function vShows() {
   return h + body + `</div>`;
 }
 function itemRow(it, i) {
-  return `<div class='sl' style='flex-wrap:wrap'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st'>${esc(it.name)}</div></div><span style='display:flex;gap:4px'><button class='btn2' data-act='up' data-id='${i}'>↑</button><button class='btn2' data-act='down' data-id='${i}'>↓</button><button class='btn2 ${it.encore ? 'on' : ''}' data-act='enc' data-id='${i}'>앵콜</button><button class='btn2 danger' data-act='del' data-id='${i}'>✕</button></span><div class='tsrow'><input class='t' placeholder='4:12' data-time='${i}' value='${esc(it.time || '')}' inputmode='numeric'><input placeholder='메모 (선택)' data-memo='${i}' value='${esc(it.memo || '')}'></div></div>`;
+  return `<div class='sl' style='flex-wrap:wrap'><span class='num'>${i + 1}</span><div class='sinfo'><div class='st' style='white-space:normal;word-break:keep-all'>${esc(it.name)}</div></div><span style='display:flex;gap:3px'><button class='btn2 sm' data-act='up' data-id='${i}'>↑</button><button class='btn2 sm' data-act='down' data-id='${i}'>↓</button><button class='btn2 sm ${it.encore ? 'on' : ''}' data-act='enc' data-id='${i}'>앵콜</button><button class='btn2 sm danger' data-act='del' data-id='${i}'>✕</button></span><div class='tsrow'><input class='t' placeholder='⏱ 시간' data-time='${i}' value='${esc(it.time || '')}' inputmode='decimal'><input placeholder='메모 (선택)' data-memo='${i}' value='${esc(it.memo || '')}'></div></div>`;
 }
 function vShow() {
   const k = PARAM, s = D.showMap[k];
@@ -1091,7 +1102,7 @@ function vShow() {
     h += sec('셋리 입력', '', 'Setlist');
     h += `<div class='card'><div class='sub'>들은 순서대로 곡을 탭해</div><div class='chips' style='margin:10px 0 12px'>` + D.songs.map(function (g) { return `<button class='chip' data-act='addItem' data-id='${esc(g['곡명'])}'>${esc(g['곡명'])}</button>`; }).join('') + `</div><div class='row'><input id='freeSong' placeholder='목록에 없는 곡은 직접 입력'><button class='btn2' data-act='addFree' style='padding:12px 14px'>추가</button></div>`;
     h += `<details style='margin-bottom:6px'${SETEDIT.items.length ? '' : ' open'}><summary class='sub' style='cursor:pointer;padding:6px 0;font-weight:700;color:var(--ink)'>⏱ 타임스탬프 통째로 붙여넣기</summary><textarea id='tsPaste' placeholder='0:00 얼리버드\n4:12 좋은맛\n8:30 선샤인'></textarea><div class='sub' style='font-size:12px;margin-bottom:8px'>유튜브 설명란에 쓴 거 그대로 붙여넣으면 돼. 셋리가 비어 있으면 셋리까지 한 번에 만들어줘</div><button class='btn2 on' data-act='applyTs'>시간 채우기</button></details>`;
-    h += `<div class='sub' style='font-size:12px;margin-top:6px'>왼쪽 시간 칸에 영상 속 시작 시간을 적으면 셋리에서 눌러서 바로 볼 수 있어</div>`;
+    h += `<div class='sub' style='font-size:12px;margin-top:6px'>시간 칸에 영상 속 시작 시간(4:12, 4.12 다 돼)을 적으면 셋리에서 눌러서 바로 볼 수 있어</div>`;
     h += SETEDIT.items.map(itemRow).join('');
     h += `<div class='actions'><button class='btn' data-act='saveSet'>셋리 저장</button><button class='btn gray' data-act='cancelSet'>취소</button></div></div>`;
   } else {
@@ -1266,6 +1277,7 @@ function act(a, id) {
   if (a === 'calm') { const b = CAL || today().slice(0, 7); let y = Number(b.slice(0, 4)), m = Number(b.slice(5, 7)) + Number(id); if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } CAL = y + '-' + p2(m); render(); return; }
   if (a === 'back') { back(); return; }
   if (a === 'reload') { load(); return; }
+  if (a === 'freshData') { toast('시트에서 새로 불러오는 중…'); load('시트 내용 반영했어 ✨', false, true); return; }
   if (a === 'refreshVisits') { VISITS = null; render(); loadVisits(); return; }
   if (a === 'moreMsg') { MSGN += 10; render(); return; }
   if (a === 'seg') { SHOWSEG = id; render(); return; }
@@ -1283,6 +1295,7 @@ function act(a, id) {
     if (name) { MYNAME = name; try { localStorage.setItem('gx_name', name); } catch (e) {} }
     const tm = nowStr();
     document.getElementById('mText').blur();
+    addMyMsg(msgKey({'시간': tm, '이름': name, '내용': text}));
     call(function () { D.messages.push({'시간': tm, '이름': name, '내용': text}); }, 'addMessage', [name, text, tm], '남겼어 💬');
     return;
   }
@@ -1355,7 +1368,7 @@ function act(a, id) {
   if (a === 'enc') { const it = SETEDIT.items[Number(id)]; it.encore = !it.encore; render(); return; }
   if (a === 'del') { SETEDIT.items.splice(Number(id), 1); render(); return; }
   if (a === 'saveSet') {
-    const p = PARAM.split('|'), items = SETEDIT.items.slice();
+    const p = PARAM.split('|'), items = SETEDIT.items.map(function (it) { const n = tsec(it.time); return Object.assign({}, it, {time: n >= 0 ? fmtT(n) : String(it.time || '').trim()}); });
     call(function () {
       D.sets = D.sets.filter(function (r) { return !sameKey(r, p); });
       items.forEach(function (it, i) { D.sets.push({'날짜': p[0], '회차': p[1] || '', '순서': String(i + 1), '곡명': it.name, '앵콜': it.encore ? 'O' : 'X', '메모': it.memo || '', '타임': it.time || ''}); });
